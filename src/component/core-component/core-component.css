@@ -1,0 +1,139 @@
+.core_component {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
+    grid-template-areas: "left content";
+    height: 100vh;
+}
+
+.left_component {
+    grid-area: left;
+    width: 350px;
+    background-color: rgb(63, 59, 59);
+    position: relative;
+    overflow-x: hidden;
+    transition: 0.3s;
+}
+
+.left_component.collapse {
+    width: 50px;
+}
+
+.left_component.collapse>.group_left_nav>.left_nav {
+    margin-left: 0px;
+    padding-left: 13px;
+    animation: 'fade_collapse' 0.3s;
+}
+
+.left_component.collapse>.group_left_nav>.left_nav>div {
+    display: none;
+}
+
+.app_name {
+    margin: 10px 5px;
+    color: rgb(63, 59, 59);
+    font-weight: bold;
+    font-size: 30px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: rgb(221, 221, 221);
+    padding: 5px 0px;
+    padding-right: 10px;
+    padding-left: 50px;
+    border-radius: 15px;
+ 
+}
+
+.collapse_left_button {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    background-color: rgb(221, 221, 221);
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    border-radius: 10px;
+}
+
+.collapse_left_button>img {
+    transition: 0.3s;
+    height: 15px;
+    width: 15px;
+    margin: 8px 7px;
+    filter: brightness(30%);
+    transform: rotate(180deg);
+}
+
+.collapse_left_button.collapse>img {
+    transition: 0.3s;
+    height: 15px;
+    width: 15px;
+    margin: 8px 8px;
+    filter: brightness(30%);
+    transform: rotate(0deg);
+}
+
+.group_left_nav {
+    margin-top: 75px;
+}
+
+.left_nav {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin-left: 25px;
+    padding: 10px 10px;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+}
+
+.left_nav:hover {
+    transition: 0.3s;
+    background-color: rgb(48, 47, 47);
+}
+
+.left_nav:not(:first-child) {
+    margin-top: 10px;
+}
+
+.left_nav.selected {
+    animation: 'fade' 0.5s;
+    background-color: rgb(221, 221, 221);
+    color: black;
+    font-weight: bold;
+}
+
+.left_nav.selected>img {
+    filter: brightness(30%);
+}
+
+.left_nav>div {
+    font-size: 18px;
+    line-height: 30px;
+    margin-left: 10px;
+}
+
+.left_nav>img {
+    height: 25px;
+    width: 25px;
+}
+
+@keyframes fade {
+    from {
+        margin-left: 350px;
+    }
+    to {
+        margin-left: 20px;
+    }
+}
+
+@keyframes fade_collapse {
+    from {
+        margin-left: 50px;
+    }
+    to {
+        margin-left: 0px;
+    }
+}
