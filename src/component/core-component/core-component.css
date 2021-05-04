@@ -23,6 +23,7 @@
     margin-left: 0px;
     padding-left: 13px;
     animation: 'fade_collapse' 0.3s;
+    -webkit-animation: 'fade_collapse' 0.5s;
 }
 
 .left_component.collapse>.group_left_nav>.left_nav>div {
@@ -42,12 +43,11 @@
     padding-right: 10px;
     padding-left: 50px;
     border-radius: 15px;
- 
 }
 
 .collapse_left_button {
     position: absolute;
-    bottom: 5px;
+    bottom: 10px;
     right: 10px;
     background-color: rgb(221, 221, 221);
     cursor: pointer;
@@ -100,6 +100,7 @@
 
 .left_nav.selected {
     animation: 'fade' 0.5s;
+    -webkit-animation: 'fade' 0.5s;
     background-color: rgb(221, 221, 221);
     color: black;
     font-weight: bold;
