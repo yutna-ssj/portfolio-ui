@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import CoreComponent from './component/core-component/core-component';
+import CoreRouter from './router/core-router';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CoreComponent />
+    <CoreRouter />
   </React.StrictMode>,
   document.getElementById('root')
 );

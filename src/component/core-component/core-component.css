@@ -1,8 +1,9 @@
 .core_component {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr;
     grid-template-rows: auto;
     grid-template-areas: "left content";
+    column-gap: 10px;
     height: 100vh;
 }
 
@@ -13,6 +14,7 @@
     position: relative;
     overflow-x: hidden;
     transition: 0.3s;
+    border-top-right-radius: 25px;
 }
 
 .left_component.collapse {
@@ -54,6 +56,7 @@
     height: 30px;
     width: 30px;
     border-radius: 10px;
+    user-select: none;
 }
 
 .collapse_left_button>img {
@@ -137,4 +140,23 @@
     to {
         margin-left: 0px;
     }
+}
+
+
+.main_component {
+    grid-area: content;
+    width: 100%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.top_bar {
+    height: 50px;
+    background-color:  rgb(63, 59, 59);
+    width: 100%;
+    max-width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-bottom-left-radius: 25px;
 }
