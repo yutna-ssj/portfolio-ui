@@ -1,6 +1,7 @@
 import React from 'react';
 import calendar from '../../assets/calendar.svg';
 import shopping_cart from '../../assets/shopping-cart.svg'
+import covid from '../../assets/virus.svg'
 
 import arrow from '../../assets/arrow.svg';
 class LeftComponent extends React.Component {
@@ -20,19 +21,28 @@ class LeftComponent extends React.Component {
 
     render() {
         const { isCollapse } = this.state;
-        const navSelected = this.props.route ? this.props.route.replaceAll(/\//g,'') : '';
+        const navSelected = this.props.route ? this.props.route.replaceAll(/\//g, '') : '';
         console.log(navSelected);
         return (< div className={isCollapse ? 'left_component collapse' : 'left_component'} >
             <div className='app_name' >{isCollapse ? 'P' : 'Portfolio'}</div>
             <div className='group_left_nav' >
-                <LeftNav name='calendar'
+                <LeftNav name='Covid-19 Situation'
+                    selected={navSelected}
+                    icon={covid}
+                    path='covid19'
+                    onSelect={
+                        (value) => this.onNavClicked(value)}
+                />
+                <LeftNav name='Calendar'
                     selected={navSelected}
                     icon={calendar}
+                    path='calendar'
                     onSelect={
                         (value) => this.onNavClicked(value)} />
-                <LeftNav name='shopping'
+                <LeftNav name='Shopping'
                     selected={navSelected}
                     icon={shopping_cart}
+                    path='shopping'
                     onSelect={
                         (value) => this.onNavClicked(value)}
                 />
@@ -43,12 +53,12 @@ class LeftComponent extends React.Component {
 }
 
 const LeftNav = (props) => {
-    const { name, selected, onSelect, icon } = props;
-    return <div className={selected === name ? 'left_nav selected' : 'left_nav'}
+    const { name, selected, onSelect, icon, path } = props;
+    return <div className={selected === path ? 'left_nav selected' : 'left_nav'}
         onClick={
-            (e) => onSelect(name)}>
+            (e) => onSelect(path)}>
         <img alt={name} src={icon} />
-        <div>{name.charAt(0).toUpperCase() + name.slice(1)}</div>
+        <div>{name}</div>
     </div>
 }
 
