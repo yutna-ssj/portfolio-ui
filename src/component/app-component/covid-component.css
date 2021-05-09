@@ -1,0 +1,46 @@
+.covid_container {
+    margin: 20px 5%;
+}
+
+.covid_report_container {
+    flex: 1 0 50%;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 25px;
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+.covid_graph_container {
+    flex: 1 0 50%;
+    background-color: yellow;
+}
+
+.covid_block:first-child {
+    flex: 2 0 100%;
+    height: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.covid_block:first-child>div:nth-child(1) {
+    font-size: 35px;
+    
+}
+
+.covid_block:first-child>div:nth-child(2) {
+    margin-left: 5px;
+    font-size: 60px;
+    color: tomato;
+    margin-top: -12px;
+}
+
+.covid_block:not(:first-child) {
+    flex: 1 0 49%;
+    height: 150px;
+    border: 1px solid black;
+}

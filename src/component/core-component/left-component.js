@@ -23,8 +23,8 @@ class LeftComponent extends React.Component {
         const { isCollapse } = this.state;
         const navSelected = this.props.route ? this.props.route.replaceAll(/\//g, '') : '';
         console.log(navSelected);
-        return (< div className={isCollapse ? 'left_component collapse' : 'left_component'} >
-            <div className='app_name' >{isCollapse ? 'P' : 'Portfolio'}</div>
+        return (< div className={isCollapse ? 'left_component yuttana_collapse' : 'left_component'} >
+            <div className='left_app_name' >{isCollapse ? 'P' : 'Portfolio'}</div>
             <div className='group_left_nav' >
                 <LeftNav name='Covid-19 Situation'
                     selected={navSelected}
@@ -47,7 +47,7 @@ class LeftComponent extends React.Component {
                         (value) => this.onNavClicked(value)}
                 />
             </div>
-            <div className={isCollapse ? 'collapse_left_button collapse' : 'collapse_left_button'} onClick={(e) => this.setState({ isCollapse: !isCollapse })}><img alt='arrow' src={arrow} /></div>
+            <div className={isCollapse ? 'collapse_left_button yuttana_collapse' : 'collapse_left_button'} onClick={(e) => this.setState({ isCollapse: !isCollapse })}><img alt='arrow' src={arrow} /></div>
         </div>);
     }
 }
