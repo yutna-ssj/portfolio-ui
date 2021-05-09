@@ -68,7 +68,7 @@
     transform: rotate(180deg);
 }
 
-.collapse_left_button.collapse>img {
+.collapse_left_button.yuttana_collapse>img {
     transition: 0.3s;
     height: 15px;
     width: 15px;

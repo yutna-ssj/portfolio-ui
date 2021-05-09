@@ -4,6 +4,11 @@ import '../app-component/covid-component.css'
 
 import { numberFormatter } from '../../service/formatter-service';
 
+import virus from '../../assets/virus.svg';
+import black_ribbon from '../../assets/black-ribbon.svg';
+import health from '../../assets/health.svg';
+import recovered from '../../assets/recovered.svg';
+
 
 const initialState = {
     Confirmed: 0,
@@ -50,17 +55,24 @@ class CovidComponent extends React.Component {
                                 <div> +{numberFormatter(NewConfirmed)}</div>
                             </div>
                             <div className='covid_block'>
+                                <img alt='virus' src={virus} />
                                 <div>{numberFormatter(Confirmed)}</div>
                                 <div>TOTAL CASES</div>
                             </div>
                             <div className='covid_block'>
-
+                                <img alt='health' src={health} />
+                                <div>{numberFormatter(Hospitalized)}</div>
+                                <div>RECEIVING MEDICAL TREATMENTS</div>
                             </div>
                             <div className='covid_block'>
-
+                                <img alt='recovered_by_Icongeek26' src={recovered} />
+                                <div>{numberFormatter(Recovered)} <div>[+{numberFormatter(NewRecovered)}]</div></div>
+                                <div>RECOVERED</div>
                             </div>
                             <div className='covid_block'>
-
+                                <img alt='black_ribbon' src={black_ribbon} />
+                                <div>{numberFormatter(Deaths)} <div>[+{numberFormatter(NewDeaths)}]</div> </div>
+                                <div>DEATHS</div>
                             </div>
                         </div>
                     </div>
