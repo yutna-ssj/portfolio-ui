@@ -6,12 +6,6 @@ import covid from '../../assets/virus.svg'
 import arrow from '../../assets/arrow.svg';
 class LeftComponent extends React.Component {
 
-    constructor(_props) {
-        super(_props);
-        this.state = { isCollapse: false };
-
-        console.log(this.state);
-    }
 
     //_props.route ? _props.route.substring(0, 1).toUpperCase() + _props.route.substring(1) : _props.route
 
@@ -20,7 +14,7 @@ class LeftComponent extends React.Component {
     }
 
     render() {
-        const { isCollapse } = this.state;
+        const { isCollapse } = this.props;
         const navSelected = this.props.route ? this.props.route.replaceAll(/\//g, '') : '';
         console.log(navSelected);
         return (< div className={isCollapse ? 'left_component yuttana_collapse' : 'left_component'} >
@@ -47,7 +41,6 @@ class LeftComponent extends React.Component {
                         (value) => this.onNavClicked(value)}
                 />
             </div>
-            <div className={isCollapse ? 'collapse_left_button yuttana_collapse' : 'collapse_left_button'} onClick={(e) => this.setState({ isCollapse: !isCollapse })}><img alt='arrow' src={arrow} /></div>
         </div>);
     }
 }

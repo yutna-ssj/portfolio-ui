@@ -42,40 +42,42 @@ class CovidComponent extends React.Component {
     }
 
     render() {
-        const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths } = this.state;
-        console.log(NewDeaths)
+        const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate } = this.state;
         return (<div className='app_container'>
             <div className='app_name'>Covid-19 Situation</div>
             <div className='content_container'>
                 <div className='covid_container'>
-                    <div className='row'><div className='col-sm-6'>
-                        <div className='covid_report_container'>
-                            <div className='covid_block'>
-                                <div>NEW CASES</div>
-                                <div> +{numberFormatter(NewConfirmed)}</div>
+                    <div className='row'>
+                        <div className='col-sm-6'>
+                            <div className='covid_update_desc'><label><b>Thailand</b>, {UpdateDate}</label></div>
+                            <div className='covid_report_container'>
+                                <div className='covid_block'>
+                                    <div>NEW CASES</div>
+                                    <div> +{numberFormatter(NewConfirmed)}</div>
+                                </div>
+                                <div className='covid_block'>
+                                    <img alt='virus' src={virus} />
+                                    <div>{numberFormatter(Confirmed)}</div>
+                                    <div>TOTAL CASES</div>
+                                </div>
+                                <div className='covid_block'>
+                                    <img alt='health' src={health} />
+                                    <div>{numberFormatter(Hospitalized)}</div>
+                                    <div>RECEIVING MEDICAL TREATMENTS</div>
+                                </div>
+                                <div className='covid_block'>
+                                    <img alt='recovered_by_Icongeek26' src={recovered} />
+                                    <div>{numberFormatter(Recovered)} <div>[+{numberFormatter(NewRecovered)}]</div></div>
+                                    <div>RECOVERED</div>
+                                </div>
+                                <div className='covid_block'>
+                                    <img alt='black_ribbon' src={black_ribbon} />
+                                    <div>{numberFormatter(Deaths)} <div>[+{numberFormatter(NewDeaths)}]</div> </div>
+                                    <div>DEATHS</div>
+                                </div>
                             </div>
-                            <div className='covid_block'>
-                                <img alt='virus' src={virus} />
-                                <div>{numberFormatter(Confirmed)}</div>
-                                <div>TOTAL CASES</div>
-                            </div>
-                            <div className='covid_block'>
-                                <img alt='health' src={health} />
-                                <div>{numberFormatter(Hospitalized)}</div>
-                                <div>RECEIVING MEDICAL TREATMENTS</div>
-                            </div>
-                            <div className='covid_block'>
-                                <img alt='recovered_by_Icongeek26' src={recovered} />
-                                <div>{numberFormatter(Recovered)} <div>[+{numberFormatter(NewRecovered)}]</div></div>
-                                <div>RECOVERED</div>
-                            </div>
-                            <div className='covid_block'>
-                                <img alt='black_ribbon' src={black_ribbon} />
-                                <div>{numberFormatter(Deaths)} <div>[+{numberFormatter(NewDeaths)}]</div> </div>
-                                <div>DEATHS</div>
-                            </div>
+                            <div className='covid_update_desc'><label><b>Informations by</b>, https://covid19.ddc.moph.go.th/th/api</label></div>
                         </div>
-                    </div>
                         <div className='col-sm-6'>
                             <div className='covid_graph_container'></div>
                         </div></div>
