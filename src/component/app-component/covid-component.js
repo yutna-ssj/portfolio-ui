@@ -22,7 +22,66 @@ const initialState = {
     UpdateDate: ''
 }
 
+const testData = [{
+    Confirmed: 43742,
+    Date: "04/19/2021",
+    Deaths: 104,
+    Hospitalized: 14851,
+    NewConfirmed: 1390,
+    NewDeaths: 3,
+    NewHospitalized: 1283,
+    NewRecovered: 104,
+    Recovered: 28787,
+},
+{
+    Confirmed: 45185,
+    Date: "04/20/2021",
+    Deaths: 108,
+    Hospitalized: 16119,
+    NewConfirmed: 1443,
+    NewDeaths: 4,
+    NewHospitalized: 1268,
+    NewRecovered: 171,
+    Recovered: 28958,
+},
+{
+    Confirmed: 46643,
+    Date: "04/21/2021",
+    Deaths: 110,
+    Hospitalized: 17162,
+    NewConfirmed: 1458,
+    NewDeaths: 2,
+    NewHospitalized: 1043,
+    NewRecovered: 413,
+    Recovered: 29371,
+},
+{
+    Confirmed: 48113,
+    Date: "04/22/2021",
+    Deaths: 117,
+    Hospitalized: 18148,
+    NewConfirmed: 1470,
+    NewDeaths: 7,
+    NewHospitalized: 986,
+    NewRecovered: 477,
+    Recovered: 29848,
+},
+{
+    Confirmed: 50183,
+    Date: "04/23/2021",
+    Deaths: 121,
+    Hospitalized: 19873,
+    NewConfirmed: 2070,
+    NewDeaths: 4,
+    NewHospitalized: 1725,
+    NewRecovered: 341,
+    Recovered: 30189,
+}
+]
+
 class CovidComponent extends React.Component {
+
+
 
     constructor(_props) {
         super(_props);
@@ -31,6 +90,7 @@ class CovidComponent extends React.Component {
 
     componentDidMount() {
         this.getTodayCovidReport();
+        this.getTimelineCovidReport();
     }
 
     getTodayCovidReport() {
@@ -39,6 +99,25 @@ class CovidComponent extends React.Component {
         }).catch((err) => {
 
         });
+    }
+
+    getTimelineCovidReport() {
+        http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/timeline').then((res) => {
+            console.log(res.Data.length / 20);
+        }).catch((err) => {
+
+        });
+
+    }
+
+    test(r) {
+        if (r) {
+            var ctx = r.getContext("2d");
+            ctx.moveTo(0, 0);
+            ctx.lineTo(200, 100);
+            ctx.stroke();
+            
+        }
     }
 
     render() {
@@ -79,8 +158,13 @@ class CovidComponent extends React.Component {
                             <div className='covid_update_desc'><label><b>Informations by</b>, https://covid19.ddc.moph.go.th/th/api</label></div>
                         </div>
                         <div className='col-sm-6'>
-                            <div className='covid_graph_container'></div>
-                        </div></div>
+                            <div className='covid_graph_container'>
+
+                                <canvas className='covid_graph' ref={(r) => this.test(r)}></canvas>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>);

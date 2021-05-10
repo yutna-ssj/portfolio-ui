@@ -12,7 +12,7 @@ class CoreComponent extends React.Component {
     constructor(_props) {
         super(_props);
 
-        this.state = { isCollapse: false };
+        this.state = { isCollapse: true };
     }
 
     onRouteChanged = (route) => {
