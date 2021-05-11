@@ -113,10 +113,15 @@ class CovidComponent extends React.Component {
     test(r) {
         if (r) {
             var ctx = r.getContext("2d");
-            ctx.moveTo(0, 0);
-            ctx.lineTo(200, 100);
+            let scale = 2;
+            console.log(r.offsetWidth);
+            r.height = r.offsetHeight * scale;
+            r.width = r.offsetWidth * scale;
+            ctx.beginPath();
+            ctx.rect(20 * scale, 20 * scale, 150 * scale, 100 * scale);
             ctx.stroke();
-            
+            ctx.closePath();
+
         }
     }
 
