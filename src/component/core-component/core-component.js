@@ -4,22 +4,27 @@ import LeftComponent from './left-component';
 import './core-component.css';
 import MainComponent from './main-component';
 
+
+
+
 class CoreComponent extends React.Component {
 
     constructor(_props) {
         super(_props);
 
-        console.log(_props);
+        this.state = { isCollapse: true };
     }
 
     onRouteChanged = (route) => {
-        this.props.history.push({pathname: '/' + route.toLowerCase()})
-    }  
+        this.props.history.push({ pathname: '/' + route.toLowerCase() })
+    }
+
 
     render() {
+        const { isCollapse } = this.state;
         return (<div className='core_component'>
-            <LeftComponent onRouteChange={this.onRouteChanged} route={this.props.location.pathname} />
-            <MainComponent />
+            <LeftComponent onRouteChange={this.onRouteChanged} route={this.props.location.pathname} isCollapse={isCollapse} />
+            <MainComponent onCollapse={() => this.setState({ isCollapse: !isCollapse })} />
         </div>);
     }
 }
