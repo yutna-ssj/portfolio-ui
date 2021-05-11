@@ -69,3 +69,21 @@
     font-size: 17px;
     font-weight: bold;
 }
+
+.covid_header {
+    margin-bottom: 10px;
+    color: rgb(54, 54, 54);
+    font-weight: bold;
+}
+
+.tomato {
+    color: tomato;
+}
+
+.green {
+    color: rgb(56, 165, 56);
+}
+
+.blue {
+    color: rgb(96, 96, 212);
+}
