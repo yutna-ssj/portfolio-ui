@@ -23,7 +23,7 @@ class GraphComponent extends React.Component {
 
             const row = this.getRow(canvas.offsetWidth);
 
-            const height = ((canvas.offsetWidth * scale) / (1.5 * 10));
+            const height = ((canvas.offsetWidth * scale) / (1.5 * row));
 
             canvas.width = canvas.offsetWidth * scale;
             canvas.height = canvas.offsetHeight * scale;
@@ -43,17 +43,19 @@ class GraphComponent extends React.Component {
             ctx.stroke();
             ctx.closePath();
 
-            const width = (((canvas.offsetWidth * scale - 40) / 497));
-
-            for (let i = 0; i < 497; i++) {
+            const width = (((canvas.offsetWidth * scale - 40) / 12));
+            console.log(width);
+            for (let i = 0; i < 12; i++) {
                 ctx.beginPath();
                 ctx.moveTo(20 + (i * width), (height * row) - (height + 20));
                 ctx.lineTo(20 + (i * width), (height * row) - (height + 20));
                 ctx.stroke();
                 ctx.closePath();
 
+                const margin_left = Math.max(height - 20, 20);
+                console.log(margin_left);
                 ctx.beginPath();
-                ctx.arc(20 + (i * width), (height * row) - (height - 20), 0.25, 0, 2 * Math.PI);
+                ctx.arc(margin_left + (i * width), (height * row) - (height - 20), 3, 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.stroke();
 
