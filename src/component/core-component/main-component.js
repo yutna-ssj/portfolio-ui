@@ -35,10 +35,6 @@ class MainComponent extends React.Component {
                         </div>
                         : null}
                 </div>
-
-
-
-
             </div>
             <AppRouter />
 

@@ -4,48 +4,82 @@ class GraphComponent extends React.Component {
 
     constructor(_props) {
         super(_props);
-        this.canvas = createRef();
+        this.ref = createRef();
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.test);
-        this.createGraph(this.canvas.current);
-    }
+        const resizeObserver = new ResizeObserver(entries => {
+            this.createGraph(entries[0].target);
+        });
 
-    componentWillUnmount() {
-        window.removeEventListener('resize',this.test);
-    }
-
-
-    test = () => {
-        this.createGraph(this.canvas.current);
+        resizeObserver.observe(this.ref.current);
     }
 
     createGraph = (element) => {
-
         if (element) {
-            console.log(element.offsetHeight, element.offsetWidth);
-            var ctx = element.getContext("2d");
+            const canvas = element;
+            var ctx = canvas.getContext("2d");
             let scale = 2;
-            element.height = element.offsetHeight * scale;
-            element.width = element.offsetWidth * scale;
+
+            const row = this.getRow(canvas.offsetWidth);
+
+            const height = ((canvas.offsetWidth * scale) / (1.5 * 10));
+
+            canvas.width = canvas.offsetWidth * scale;
+            canvas.height = canvas.offsetHeight * scale;
+
+
+            for (let i = 0; i < row; i++) {
+                ctx.beginPath();
+                ctx.moveTo(20, (height * i) + 20)
+                ctx.lineTo(((canvas.offsetWidth * scale) - 20), (height * i) + 20);
+                ctx.stroke();
+                ctx.closePath();
+            }
+
             ctx.beginPath();
-            ctx.moveTo(20 * scale, 20 * scale);
-            ctx.lineTo(20 * scale, 250 * scale);
+            ctx.moveTo(20, 20);
+            ctx.lineTo(20, (height * row) - height + 20);
             ctx.stroke();
             ctx.closePath();
 
-            ctx.beginPath();
-            ctx.moveTo(10 * scale, 250 * scale);
-            ctx.lineTo(element.width * scale, 250 * scale);
-            ctx.stroke();
-            ctx.closePath();
+            const width = (((canvas.offsetWidth * scale - 40) / 10));
+
+            for (let i = 0; i <= 10; i++) {
+                ctx.beginPath();
+                ctx.moveTo(20 + (i * width), (height * row) - (height + 20));
+                ctx.lineTo(20 + (i * width), (height * row) - (height + 20));
+                ctx.stroke();
+                ctx.closePath();
+
+                const rd = Math.floor(Math.random() * (height * row)) + 20;
+                console.log(rd);
+                ctx.beginPath();
+                ctx.arc(20 + (i * width), rd, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+
+
+            }
+
+
+
+        }
+    }
+
+    getRow = (width) => {
+        if (width > 500) {
+            return 10;
+        } else if (width > 350 && width <= 500) {
+            return 6;
+        } else {
+            return 5;
         }
     }
 
 
     render() {
-        return (<canvas ref={this.canvas} style={{ height: '400px', width: '100%' }}></canvas>);
+        return (<canvas ref={this.ref} style={{ height: '500px', width: '100%', backgroundColor: 'white' }}></canvas>);
     }
 }
 

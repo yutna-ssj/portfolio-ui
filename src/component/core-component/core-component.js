@@ -11,12 +11,11 @@ class CoreComponent extends React.Component {
 
     constructor(_props) {
         super(_props);
-
         this.state = { isCollapse: true };
     }
 
     onRouteChanged = (route) => {
-        this.props.history.push({ pathname: '/' + route.toLowerCase() })
+        this.props.history.push({ pathname: '/' + route.toLowerCase(), state: { isCollapse: this.state.isCollapse } });
     }
 
 

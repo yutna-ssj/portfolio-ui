@@ -19,7 +19,7 @@ const AppRouter = (props) => {
             <Route path='/shopping' component={ShoppingComponent} />
             <Route path='/covid19' component={CovidComponent} />
             <Route path='/404' component={NotFoundComponent} />
-            <Redirect path='/*' to='/calendar' />
+            <Redirect path='/*' to='/covid19' />
         </Switch>)
 }
 

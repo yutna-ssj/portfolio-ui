@@ -2,8 +2,6 @@ import React from 'react';
 import calendar from '../../assets/calendar.svg';
 import shopping_cart from '../../assets/shopping-cart.svg'
 import covid from '../../assets/virus.svg'
-
-import arrow from '../../assets/arrow.svg';
 class LeftComponent extends React.Component {
 
 
@@ -16,7 +14,6 @@ class LeftComponent extends React.Component {
     render() {
         const { isCollapse } = this.props;
         const navSelected = this.props.route ? this.props.route.replaceAll(/\//g, '') : '';
-        console.log(navSelected);
         return (< div className={isCollapse ? 'left_component yuttana_collapse' : 'left_component'} >
             <div className='left_app_name' >{isCollapse ? 'P' : 'Portfolio'}</div>
             <div className='group_left_nav' >

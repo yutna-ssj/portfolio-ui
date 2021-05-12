@@ -127,6 +127,8 @@ class CovidComponent extends React.Component {
     }
 
     render() {
+        const { location } = this.props;
+        console.log(location);
         const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate } = this.state;
         return (<div className='app_container'>
             <div className='app_name'>Covid-19 Situation</div>
@@ -164,7 +166,7 @@ class CovidComponent extends React.Component {
                             <div className='covid_update_desc'><label><b>Informations by</b>, https://covid19.ddc.moph.go.th/th/api</label></div>
                         </div>
                         <div className='col-sm-6'>
-                            <GraphComponent />
+                            <GraphComponent collapse={location.state.isCollapse} />
                         </div>
                     </div>
                 </div>
