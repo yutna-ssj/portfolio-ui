@@ -104,31 +104,14 @@ class CovidComponent extends React.Component {
 
     getTimelineCovidReport() {
         http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/timeline').then((res) => {
-            console.log(res.Data.length / 20);
+            console.log(res.Data.length);
         }).catch((err) => {
 
         });
 
     }
 
-    test(r) {
-        if (r) {
-            var ctx = r.getContext("2d");
-            let scale = 2;
-            console.log(r.offsetWidth);
-            r.height = r.offsetHeight * scale;
-            r.width = r.offsetWidth * scale;
-            ctx.beginPath();
-            ctx.rect(20 * scale, 20 * scale, 150 * scale, 100 * scale);
-            ctx.stroke();
-            ctx.closePath();
-
-        }
-    }
-
     render() {
-        const { location } = this.props;
-        console.log(location);
         const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate } = this.state;
         return (<div className='app_container'>
             <div className='app_name'>Covid-19 Situation</div>
@@ -166,7 +149,7 @@ class CovidComponent extends React.Component {
                             <div className='covid_update_desc'><label><b>Informations by</b>, https://covid19.ddc.moph.go.th/th/api</label></div>
                         </div>
                         <div className='col-sm-6'>
-                            <GraphComponent collapse={location.state.isCollapse} />
+                            <GraphComponent/>
                         </div>
                     </div>
                 </div>

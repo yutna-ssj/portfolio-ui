@@ -43,19 +43,17 @@ class GraphComponent extends React.Component {
             ctx.stroke();
             ctx.closePath();
 
-            const width = (((canvas.offsetWidth * scale - 40) / 10));
+            const width = (((canvas.offsetWidth * scale - 40) / 497));
 
-            for (let i = 0; i <= 10; i++) {
+            for (let i = 0; i < 497; i++) {
                 ctx.beginPath();
                 ctx.moveTo(20 + (i * width), (height * row) - (height + 20));
                 ctx.lineTo(20 + (i * width), (height * row) - (height + 20));
                 ctx.stroke();
                 ctx.closePath();
 
-                const rd = Math.floor(Math.random() * (height * row)) + 20;
-                console.log(rd);
                 ctx.beginPath();
-                ctx.arc(20 + (i * width), rd, 3, 0, 2 * Math.PI);
+                ctx.arc(20 + (i * width), (height * row) - (height - 20), 0.25, 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.stroke();
 
