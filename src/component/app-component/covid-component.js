@@ -20,7 +20,8 @@ const initialState = {
     NewHospitalized: 0,
     NewRecovered: 0,
     Recovered: 0,
-    UpdateDate: ''
+    UpdateDate: '',
+    dataSet: []
 }
 
 const testData = [{
@@ -104,7 +105,7 @@ class CovidComponent extends React.Component {
 
     getTimelineCovidReport() {
         http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/timeline').then((res) => {
-            console.log(res.Data.length);
+            this.setState({ dataSet: res.Data });
         }).catch((err) => {
 
         });
@@ -112,7 +113,7 @@ class CovidComponent extends React.Component {
     }
 
     render() {
-        const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate } = this.state;
+        const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate, dataSet } = this.state;
         return (<div className='app_container'>
             <div className='app_name'>Covid-19 Situation</div>
             <div className='content_container'>
@@ -149,7 +150,7 @@ class CovidComponent extends React.Component {
                             <div className='covid_update_desc'><label><b>Informations by</b>, https://covid19.ddc.moph.go.th/th/api</label></div>
                         </div>
                         <div className='col-sm-6'>
-                            <GraphComponent/>
+                            <GraphComponent dataSet={dataSet} />
                         </div>
                     </div>
                 </div>
