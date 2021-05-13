@@ -120,7 +120,7 @@ class GraphComponent extends React.Component {
             canvas.width = canvas.offsetWidth * scale;
             canvas.height = canvas.offsetHeight * scale;
 
-            const max = 3000;
+            const max = 5000;
             const value_text = max / (row);
             let count = max;
             for (let i = 0; i <= row; i++) {
