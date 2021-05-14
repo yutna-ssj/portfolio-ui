@@ -28,6 +28,17 @@ const initialState = {
     graphData: {},
 }
 
+const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
+
+const genericOptions = {
+    fill: false,
+    interaction: {
+      intersect: false
+    },
+    radius: 0,
+  };
+
 class CovidComponent extends React.Component {
 
     constructor(_props) {
@@ -75,7 +86,10 @@ class CovidComponent extends React.Component {
                     backgroundColor: color,
                     data: dataSet.map((item) => {
                         return item[name];
-                    })
+                    }),
+                    segment: {
+                        borderColor: ctx => skipped(ctx, color) || down(ctx, color),
+                      }
                 }],
             }, tabSelected: selected
         })
@@ -87,7 +101,7 @@ class CovidComponent extends React.Component {
             case "New Cases":
                 return "tomato"
             case "New Recovered":
-                return "green"
+                return "#91E884"
             case "New Deaths":
                 return "gray"
             default: return "tomato"
@@ -114,21 +128,6 @@ class CovidComponent extends React.Component {
             return false;
         }
     }
-
-    // getSnapshotBeforeUpdate(PrevProps, PrevState) {
-    //     if (PrevState.tabSelected !== this.state.tabSelected) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // componentDidUpdate(snapshot) {
-    //     if (snapshot) {
-
-    //     }
-    // }
-
 
     render() {
         const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate, dataSet, tabSelected, graphData } = this.state;
@@ -168,15 +167,13 @@ class CovidComponent extends React.Component {
                             <div className='covid_update_desc'><label><b>Informations by</b>, https://covid19.ddc.moph.go.th/th/api</label></div>
                         </div>
                         <div className='col-sm-6'>
-
                             <TabButtonGroup>
                                 <TabButton name={'New Cases'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
                                 <TabButton name={'New Recovered'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
                                 <TabButton name={'New Deaths'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
                                 <TabButton name={'Total Cases'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
                             </TabButtonGroup>
-
-                            <Line data={graphData} height={240} />
+                            <Line data={graphData} height={240} options={genericOptions} />
                             {/* <GraphComponent dataSet={dataSet} height={240} color={'red'} labels={[]} data={[]} /> */}
                         </div>
                     </div>

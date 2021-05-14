@@ -20,7 +20,6 @@ class MainComponent extends React.Component {
             <div className='top_bar_container'>
                 <div className='top_bar_left'>
                     <div className='top_bar_collaspe_button' onClick={(e) => onCollapse()} ><img alt='collapse' src={menu} /></div>
-
                 </div>
                 <div className='top_bar_right'>
                     <div className='top_bar_left_button'><img alt='info' src={info} /></div>
@@ -40,7 +39,6 @@ class MainComponent extends React.Component {
                 </div>
             </div>
             <AppRouter />
-
         </div >);
     }
 }
