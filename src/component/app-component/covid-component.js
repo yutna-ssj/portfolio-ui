@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createRef } from 'react'
 import http, { HttpMethod } from '../../service/http-service';
 import '../app-component/covid-component.css'
 
@@ -10,6 +10,8 @@ import health from '../../assets/health.svg';
 import recovered from '../../assets/recovered.svg';
 import GraphComponent from '../share-component/graph-component';
 
+import { Line } from 'react-chartjs-2';
+import { TabButton, TabButtonGroup } from '../share-component/tab-button-component';
 
 const initialState = {
     Confirmed: 0,
@@ -21,69 +23,12 @@ const initialState = {
     NewRecovered: 0,
     Recovered: 0,
     UpdateDate: '',
-    dataSet: []
+    dataSet: [],
+    tabSelected: '',
+    graphData: {},
 }
-
-const testData = [{
-    Confirmed: 43742,
-    Date: "04/19/2021",
-    Deaths: 104,
-    Hospitalized: 14851,
-    NewConfirmed: 1390,
-    NewDeaths: 3,
-    NewHospitalized: 1283,
-    NewRecovered: 104,
-    Recovered: 28787,
-},
-{
-    Confirmed: 45185,
-    Date: "04/20/2021",
-    Deaths: 108,
-    Hospitalized: 16119,
-    NewConfirmed: 1443,
-    NewDeaths: 4,
-    NewHospitalized: 1268,
-    NewRecovered: 171,
-    Recovered: 28958,
-},
-{
-    Confirmed: 46643,
-    Date: "04/21/2021",
-    Deaths: 110,
-    Hospitalized: 17162,
-    NewConfirmed: 1458,
-    NewDeaths: 2,
-    NewHospitalized: 1043,
-    NewRecovered: 413,
-    Recovered: 29371,
-},
-{
-    Confirmed: 48113,
-    Date: "04/22/2021",
-    Deaths: 117,
-    Hospitalized: 18148,
-    NewConfirmed: 1470,
-    NewDeaths: 7,
-    NewHospitalized: 986,
-    NewRecovered: 477,
-    Recovered: 29848,
-},
-{
-    Confirmed: 50183,
-    Date: "04/23/2021",
-    Deaths: 121,
-    Hospitalized: 19873,
-    NewConfirmed: 2070,
-    NewDeaths: 4,
-    NewHospitalized: 1725,
-    NewRecovered: 341,
-    Recovered: 30189,
-}
-]
 
 class CovidComponent extends React.Component {
-
-
 
     constructor(_props) {
         super(_props);
@@ -102,18 +47,91 @@ class CovidComponent extends React.Component {
 
         });
     }
-
+    
     getTimelineCovidReport() {
         http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/timeline').then((res) => {
-            this.setState({ dataSet: res.Data });
+            this.setState({
+                dataSet: res.Data
+            });
+            this.changeGraphData("New Cases");
         }).catch((err) => {
 
         });
 
     }
 
+    changeGraphData = (selected) => {
+        const { dataSet } = this.state;
+        const color = this.getColor(selected);
+        const name = this.getProperty(selected);
+        this.setState({
+            graphData: {
+                labels: dataSet.map((item) => {
+                    return item.Date;
+                }),
+                datasets: [{
+                    label: selected,
+                    borderColor: color,
+                    backgroundColor: color,
+                    data: dataSet.map((item) => {
+                        return item[name];
+                    })
+                }],
+            }, tabSelected: selected
+        })
+    }
+
+
+    getColor = (selected) => {
+        switch (selected) {
+            case "New Cases":
+                return "tomato"
+            case "New Recovered":
+                return "green"
+            case "New Deaths":
+                return "gray"
+            default: return "tomato"
+        }
+    }
+
+    getProperty = (selected) => {
+        switch (selected) {
+            case "New Cases":
+                return "NewConfirmed"
+            case "New Recovered":
+                return "NewRecovered"
+            case "New Deaths":
+                return "NewDeaths"
+            default: return "Confirmed"
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.tabSelected !== this.state.tabSelected || nextState.Confirmed !== this.state.Confirmed
+            || nextState.dataSet.length !== this.state.dataSet.length) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // getSnapshotBeforeUpdate(PrevProps, PrevState) {
+    //     if (PrevState.tabSelected !== this.state.tabSelected) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    // componentDidUpdate(snapshot) {
+    //     if (snapshot) {
+
+    //     }
+    // }
+
+
     render() {
-        const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate, dataSet } = this.state;
+        const { NewConfirmed, Confirmed, Hospitalized, NewRecovered, Recovered, NewDeaths, Deaths, UpdateDate, dataSet, tabSelected, graphData } = this.state;
         return (<div className='app_container'>
             <div className='app_name'>Covid-19 Situation</div>
             <div className='content_container'>
@@ -133,7 +151,7 @@ class CovidComponent extends React.Component {
                                 </div>
                                 <div className='covid_block'>
                                     <img alt='health' src={health} />
-                                    <div>{numberFormatter(Hospitalized)}</div>
+                                    <div>{numberFormatter(Hospitalized)} </div>
                                     <div>RECEIVING MEDICAL TREATMENTS</div>
                                 </div>
                                 <div className='covid_block'>
@@ -150,7 +168,16 @@ class CovidComponent extends React.Component {
                             <div className='covid_update_desc'><label><b>Informations by</b>, https://covid19.ddc.moph.go.th/th/api</label></div>
                         </div>
                         <div className='col-sm-6'>
-                            <GraphComponent dataSet={dataSet} />
+
+                            <TabButtonGroup>
+                                <TabButton name={'New Cases'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
+                                <TabButton name={'New Recovered'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
+                                <TabButton name={'New Deaths'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
+                                <TabButton name={'Total Cases'} selected={tabSelected} onChange={(name) => this.changeGraphData(name)} />
+                            </TabButtonGroup>
+
+                            <Line data={graphData} height={240} />
+                            {/* <GraphComponent dataSet={dataSet} height={240} color={'red'} labels={[]} data={[]} /> */}
                         </div>
                     </div>
                 </div>
