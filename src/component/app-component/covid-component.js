@@ -53,7 +53,7 @@ class CovidComponent extends React.Component {
             this.setState({
                 dataSet: res.Data
             });
-            this.changeGraphData("New Cases");
+            this.changeGraphData("Total Cases");
         }).catch((err) => {
 
         });

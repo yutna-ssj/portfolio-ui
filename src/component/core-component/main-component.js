@@ -2,6 +2,7 @@ import React from 'react';
 import AppRouter from '../../router/app-router';
 import arrow from '../../assets/arrow.svg';
 import menu from '../../assets/menu.svg';
+import info from '../../assets/info.svg'
 import '../app-component/app-component.css';
 
 
@@ -19,10 +20,12 @@ class MainComponent extends React.Component {
             <div className='top_bar_container'>
                 <div className='top_bar_left'>
                     <div className='top_bar_collaspe_button' onClick={(e) => onCollapse()} ><img alt='collapse' src={menu} /></div>
+
                 </div>
                 <div className='top_bar_right'>
+                    <div className='top_bar_left_button'><img alt='info' src={info} /></div>
                     <div className='top_bar_profile'>
-                    G
+                        G
                     </div>
                     <div className={isNavOpen ? 'top_bar_button clicked' : 'top_bar_button'} onClick={(e) => this.setState({ isNavOpen: !isNavOpen })}>
                         <div>Guest</div>
