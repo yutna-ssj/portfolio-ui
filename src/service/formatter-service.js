@@ -10,9 +10,7 @@ export const numberFormatter = (value) => {
 
     const numberOfComma = Math.floor(value.length / 3);
 
-    if (numberOfComma === 1 && value.length === 3) {
-        ret = value;
-    } else if (numberOfComma > 0) {
+    if (numberOfComma > 0) {
         for (let i = 0; i < numberOfComma; i++) {
             ret = ret + value.slice(i * 3, 3 * (i + 1)) + ',';
             if (i + 1 === numberOfComma) {
@@ -21,6 +19,10 @@ export const numberFormatter = (value) => {
         }
     } else {
         ret = value;
+    }
+
+    if (value.length % 3 === 0) {
+        ret = ret.slice(0, ret.length - 1);
     }
 
 

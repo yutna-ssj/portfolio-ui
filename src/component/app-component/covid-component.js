@@ -68,7 +68,6 @@ class CovidComponent extends React.Component {
         }).catch((err) => {
 
         });
-
     }
 
     changeGraphData = (selected) => {
