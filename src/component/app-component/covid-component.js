@@ -1,5 +1,5 @@
 import React, { createRef } from 'react'
-import http, { HttpMethod } from '../../service/http-service';
+// import http, { HttpMethod } from '../../service/http-service';
 import '../app-component/covid-component.css'
 
 import { numberFormatter } from '../../service/formatter-service';
@@ -52,22 +52,22 @@ class CovidComponent extends React.Component {
     }
 
     getTodayCovidReport() {
-        http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/today').then((res) => {
-            this.setState({ ...res });
-        }).catch((err) => {
+        // http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/today').then((res) => {
+        //     this.setState({ ...res });
+        // }).catch((err) => {
 
-        });
+        // });
     }
     
     getTimelineCovidReport() {
-        http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/timeline').then((res) => {
-            this.setState({
-                dataSet: res.Data
-            });
-            this.changeGraphData("Total Cases");
-        }).catch((err) => {
+        // http(HttpMethod.GET, 'https://covid19.th-stat.com/api/open/timeline').then((res) => {
+        //     this.setState({
+        //         dataSet: res.Data
+        //     });
+        //     this.changeGraphData("Total Cases");
+        // }).catch((err) => {
 
-        });
+        // });
     }
 
     changeGraphData = (selected) => {

@@ -3,11 +3,11 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
-    Redirect
 } from "react-router-dom";
 import CoreComponent from '../component/core-component/core-component';
 import Login from '../component/core-component/login-component';
+import PrivateRoute from './private-route';
+import { connect } from "react-redux";
 
 const CoreRouter = (props) => {
 
@@ -15,10 +15,18 @@ const CoreRouter = (props) => {
         <Router>
             <Switch>
                 <Route path='/login' component={Login} />
-                <Route path='/' component={CoreComponent} />
+                <PrivateRoute path='/' component={CoreComponent} />
             </Switch>
         </Router>);
 }
 
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.httpState.isLoading,
+        logged: state.authState.logged
+    };
+};
 
-export default CoreRouter;
+
+
+export default connect(mapStateToProps)(CoreRouter);

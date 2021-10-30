@@ -6,11 +6,20 @@ import reportWebVitals from './reportWebVitals';
 import CoreComponent from './component/core-component/core-component';
 import CoreRouter from './router/core-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Provider } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
+import { authReducer, httpReducer } from './redux/reducer';
+
+
+export const store = createStore(combineReducers({ httpState: httpReducer, authState: authReducer }));
 
 ReactDOM.render(
-  <React.StrictMode>
-    <CoreRouter />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <CoreRouter />
+    </React.StrictMode>
+  </Provider>
+  ,
   document.getElementById('root')
 );
 

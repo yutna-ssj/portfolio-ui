@@ -1,6 +1,6 @@
 $color_white: #ffffff;
 $color_primary_bg: #f5f5f5;
-$color_bg_blue: #e2ebf575;
+$color_bg_blue: #eaf4ff;
 $color_primary_darkblue: #7596dd;
 
 $color_border: #cacaca;
@@ -11,6 +11,8 @@ $color_app_text: #797979;
 $color_disabled_text: #b8b8b8;
 $color_hover: #e9e9e9;
 
+$color_loading: #4b4b4b3f;
+
 @mixin prefix($property, $value, $prefixes) {
     @each $prefix in $prefixes {
         -#{$prefix}-#{$property}: $value;
@@ -20,12 +22,93 @@ $color_hover: #e9e9e9;
 
 /* autoprefixer: off */
 
+.loading_container {
+    @include prefix(animation, fade 0.3s, moz webkit);
+    background-color: $color_loading;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & .loading {
+        position: absolute;
+        & .blue {
+            margin: 0px 10px;
+            height: 15px;
+            width: 15px;
+            right: 0;
+            background-color: $color_primary_darkblue;
+        }
+    }
+}
+
+@keyframes fade {
+    from {
+        opacity: 5;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.message_container {
+    @include prefix(animation, scale-popup 0.3s, moz webkit);
+    padding: 10px 10px;
+    display: flex;
+    flex-flow: row nowrap !important;
+    height: auto !important;
+    & img {
+        flex: 0 1 25px;
+        height: 25px;
+        width: 25px;
+    }
+
+    & .message {
+        flex: 1 0 1;
+        padding: 0px 10px;
+        height: auto;
+        & .main {
+            color: $color_app_text;
+            font-size: 15px;
+            font-weight: 550;
+        }
+
+        & .sub {
+            color: $color_disabled_text;
+            font-size: 13px;
+        }
+    }
+
+    & button {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background-color: transparent;
+        flex: 0 1 15px;
+        width: 15px;
+        height: 15px;
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & img {
+            height: 10px;
+            width: 10px;
+        }
+    }
+}
+
 .core_component {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(calc(100% - 200px), calc(100% - 50px));
     grid-template-rows: auto;
     grid-template-areas: "left content";
     height: 100vh;
+    overflow: hidden;
 }
 
 .left_component {
@@ -33,12 +116,14 @@ $color_hover: #e9e9e9;
     grid-area: left;
     width: 200px;
     background-color: $color_white;
+    z-index: 3;
     position: relative;
     overflow-x: hidden;
     transition: 0.3s;
     border-right: 1px solid $color_border;
 
     &._collapse {
+        grid-area: left;
         width: 50px;
         padding-left: 0px !important;
 
@@ -51,6 +136,48 @@ $color_hover: #e9e9e9;
             }
         }
     }
+}
+
+.left_collaspe_button {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    margin-right: 5px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    @include prefix(user-select, none, moz webkit);
+    border: none;
+    background-color: transparent;
+    & img {
+        height: 15px;
+        width: 15px;
+        filter: brightness(1.5);
+    }
+    &:hover {
+        transition: 0.3s;
+        box-shadow: 0px 2px 10px 2px $color_shadow;
+
+        & img {
+            transition: 0.3s;
+            filter: brightness(1);
+        }
+    }
+}
+
+.main_app_name {
+    display: none;
+    color: $color_primary_text;
+    font-weight: bold;
+    font-size: 20px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 10px;
+    border: 1px solid $color_border;
 }
 
 .left_app_name {
@@ -169,6 +296,7 @@ $color_hover: #e9e9e9;
 }
 
 .main_component {
+    width: auto;
     grid-area: content;
     position: relative;
     background-color: $color_primary_bg;
@@ -197,6 +325,7 @@ $color_hover: #e9e9e9;
     height: 30px;
     width: 30px;
     border-radius: 5px;
+    margin-right: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -348,10 +477,15 @@ $color_hover: #e9e9e9;
 }
 
 // APP CONTAINER //
+
+.app {
+    overflow-y: auto !important;
+    width: 100%;
+}
 .app_container {
     padding-top: 15px;
     position: relative;
-    overflow-y: auto !important;
+
     height: calc(100vh - 45px);
     & .app_name {
         color: $color_app_text;
@@ -587,10 +721,35 @@ $color_hover: #e9e9e9;
     }
 }
 
-@media only all and (max-width: 600px) {
+@media only all and (max-width: 630px) {
+    .core_component {
+        display: grid;
+        grid-template-columns: auto minmax(calc(100% - 200px), calc(100% - 0px));
+        // grid-template-rows: auto;
+        // grid-template-areas: "left content";
+        // height: 100vh;
+        // overflow: hidden;
+    }
+
+    .left_collaspe_button {
+        display: flex;
+    }
+
+    .main_app_name {
+        display: block;
+    }
+
     .left_component {
-        width: 50px;
+        width: 200px;
+        position: absolute;
+        height: 100%;
         padding-left: 0px !important;
+
+        &._collapse {
+            grid-area: left;
+            width: 0px;
+            padding-left: 0px !important;
+        }
         & .group_left_nav .left_nav {
             margin-left: 0px !important;
             padding-left: 13px;
@@ -602,6 +761,7 @@ $color_hover: #e9e9e9;
     }
 
     .left_app_name {
+        display: none;
         padding-left: 50px;
         right: 8px;
         & label:first-child {
@@ -613,9 +773,9 @@ $color_hover: #e9e9e9;
         }
     }
 
-    .top_bar_collaspe_button {
-        display: none;
-    }
+    // .top_bar_collaspe_button {
+    //     display: none;
+    // }
     .tab_button_group {
         display: none;
     }
@@ -688,7 +848,7 @@ $color_hover: #e9e9e9;
     border: none !important;
     margin-bottom: 10px;
     height: 150px;
-    box-shadow: 0px 1px 5px 2px $color_shadow !important;
+    @include prefix(box-shadow, 0px 1px 5px 2px $color_shadow !important, moz webkit);
 }
 
 // CARD //
@@ -697,7 +857,7 @@ $color_hover: #e9e9e9;
 
 .calendar_container {
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 100px 3fr;
     grid-template-rows: 1fr;
     row-gap: 1px;
     column-gap: 12px;
@@ -705,14 +865,11 @@ $color_hover: #e9e9e9;
 
     & .left {
         grid-area: left;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr;
     }
 
-    & .body {
+    & .right {
         grid-area: right;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr;
+        width: 100%;
     }
 }
 
@@ -722,21 +879,23 @@ $color_hover: #e9e9e9;
         display: flex;
         margin-top: 20px;
         & label {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
             color: $color_app_text;
             font-size: 18px;
             font-weight: 550;
             letter-spacing: 2px;
             width: 100%;
             margin-left: 9px;
-            @include prefix(animation, scale-popup 0.3s, moz webkit);
         }
 
         & .button_container {
             display: flex;
-
+            background-color: white !important;
             & button {
                 border-radius: 10px;
-                background-color: transparent;
+                background-color: white;
                 border: none;
                 height: 25px;
                 width: 25px;
@@ -778,7 +937,7 @@ $color_hover: #e9e9e9;
         display: flex;
         flex-wrap: wrap;
         margin-bottom: 20px;
-
+        width: 100%;
         & .current_week {
             background-color: $color_bg_blue;
             &:nth-child(7n - 6) {
@@ -799,16 +958,93 @@ $color_hover: #e9e9e9;
             justify-content: center;
             align-items: center;
             height: 30px;
-            flex: 0 1 14.28%;
+            width: 100% !important;
+            flex: 1 0 14.28%;
             color: $color_primary_text;
             font-size: 13px;
             font-weight: 550;
             cursor: pointer;
             @include prefix(user-select, none, moz webkit);
 
-            & .today {
+            &.today {
                 position: absolute;
                 color: $color_primary_darkblue;
+                font-weight: bold;
+            }
+
+            &.disabled {
+                position: absolute;
+                color: $color_disabled_text !important;
+            }
+
+            & .point_container {
+                position: absolute;
+                bottom: -2px;
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: center;
+                align-items: flex-end;
+            }
+            & .planner_point {
+                margin: 0px 1px !important;
+                flex: 0 1 4px;
+                height: 4px;
+                width: 4px;
+                border-radius: 50%;
+                background-color: #f58e80fd;
+            }
+        }
+    }
+}
+
+.today_dashboard_container {
+    height: auto;
+    & label {
+        color: $color_primary_darkblue;
+        font-weight: 550;
+        margin: 10px 0px;
+    }
+
+    & .today_planner_item {
+        display: flex;
+        margin-bottom: 10px;
+
+        & .left {
+            position: relative;
+            width: 10px;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            & .tab_color {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background-color: #f58e80fd;
+            }
+        }
+
+        & .right {
+            display: flex;
+            flex-flow: column wrap;
+            background-color: #f7b2a962;
+            padding: 5px 5px;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            & .name {
+                color: $color_primary_text;
+                font-weight: 600;
+            }
+            & .period_time {
+                color: $color_app_text;
+                font-weight: 550;
+                font-size: 13px;
+            }
+
+            & .owner {
+                color: $color_app_text;
+                font-weight: 550;
+                font-size: 13px;
             }
         }
     }
@@ -871,58 +1107,405 @@ $color_hover: #e9e9e9;
             }
         }
     }
-    & .header_week_calendar {
-        display: inline-flex;
-        width: 100%;
-        height: 100px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        background-color: $color_bg_blue;
-        & div {
-            flex-direction: column;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 0 1 14.28%;
-            text-align: center;
-            text-transform: uppercase;
 
-            color: $color_app_text;
+    $first_color: #f7b2a98e;
+    $second_color: #ff82748e;
+    $third_color: #fd5e4c8e;
+    & .week_calendar {
+        overflow: hidden;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        @include prefix(box-shadow, 0px 1px 5px 2px $color_shadow !important, moz webkit);
+        & .header_week_calendar {
+            display: inline-flex;
+            width: 100%;
+            height: 100px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background-color: $color_bg_blue;
+            & div {
+                flex-direction: column;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex: 0 1 14.28%;
+                text-align: center;
+                text-transform: uppercase;
 
-            & label:first-child {
-                font-size: 16px;
-                font-weight: 550;
+                color: $color_app_text;
+
+                & label:first-child {
+                    font-size: 16px;
+                    font-weight: 550;
+                }
+
+                & label:last-child {
+                    font-size: 30px;
+                    font-weight: bold;
+                }
+
+                &:not(:first-child) {
+                    border-left: 1px solid $color_border;
+                }
             }
 
-            & label:last-child {
-                font-size: 30px;
-                font-weight: bold;
+            & .today {
+                color: $color_primary_darkblue !important;
+                background-color: #c3d5fa7a;
             }
 
-            &:not(:first-child) {
-                border-left: 1px solid $color_border;
+            & .disabled {
+                color: $color_disabled_text !important;
             }
         }
+        & .body_week_calendar {
+            position: relative;
+            width: 100%;
+            background-color: $color_white;
+            height: 100%;
+            min-height: 290px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            overflow: hidden;
 
-        & .today {
-            color: $color_primary_darkblue !important;
+            & .body_container {
+                position: absolute;
+                display: inline-flex;
+                min-height: inherit;
+                height: 100%;
+                width: 100%;
+                & div {
+                    flex: 0 1 14.28%;
+                    color: $color_primary_darkblue;
+                    &:not(:first-child) {
+                        border-left: 1px solid $color_border;
+                    }
+
+                    &.disabled {
+                        background-color: $color_primary_bg;
+                    }
+
+                    &.today {
+                        background-color: #c3d5fa4f;
+                    }
+                }
+            }
+
+            & .list_planner_container {
+                padding-bottom: 10px;
+                position: relative;
+                width: 100%;
+                $border_planner_color: #6b6b6b4b;
+                @include prefix(animation, slide 0.4s, moz webkit);
+                & .item_planner {
+                    position: relative;
+                    padding: 5px 10px;
+                    margin: 0px 5px;
+                    margin-top: 10px;
+                    // border-top: 1px solid $border_planner_color;
+                    // border-bottom: 1px solid $border_planner_color;
+                    display: flex;
+                    justify-content: start;
+                    align-items: flex-start;
+                    flex-flow: row nowrap;
+
+                    & .line {
+                        left: 0;
+                        top: 0;
+                        position: absolute;
+                        height: 5px;
+                        width: 100%;
+                    }
+
+                    &.first_color {
+                        & .line {
+                            background-color: $first_color;
+                        }
+                    }
+
+                    &.second_color {
+                        & .line {
+                            background-color: $second_color;
+                            height: 5px;
+                            width: 100%;
+                        }
+                    }
+
+                    &.third_color {
+                        & .line {
+                            background-color: $third_color;
+                            height: 5px;
+                            width: 100%;
+                        }
+                    }
+
+                    &.is_start {
+                        border-top-left-radius: 10px;
+                        border-bottom-left-radius: 10px;
+
+                        // border-left: 1px solid $border_planner_color;
+                    }
+
+                    &.is_end {
+                        border-top-right-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                        // border-right: 1px solid $border_planner_color;
+                    }
+
+                    & img {
+                        margin-top: 10px;
+                        height: 20px;
+                        width: 20px;
+                    }
+
+                    & .planner_desc_container {
+                        margin-left: 5px;
+                        display: flex;
+                        justify-content: start;
+                        flex-flow: column nowrap;
+                        width: 100%;
+
+                        & .planner_taskname {
+                            display: inline-block;
+                            // overflow: hidden;
+                            // white-space: nowrap;
+                            font-size: 15px;
+                            color: $color_primary_text;
+                            letter-spacing: 1px;
+                            font-weight: bold;
+                            // overflow: hidden !important;
+                            // text-overflow: ellipsis;
+                            & .planner_period {
+                                display: inline-block;
+                                font-size: 13px;
+                                letter-spacing: 0px;
+                                color: $color_primary_text;
+                                font-weight: 550;
+                            }
+                        }
+
+                        & .planner_owner {
+                            display: inline-block;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            font-size: 13px;
+                            width: 100%;
+                            color: $color_app_text;
+                            font-weight: 550;
+                            text-overflow: ellipsis;
+                        }
+                    }
+                }
+            }
         }
     }
 
-    & .body_week_calendar {
+    & .week_pin_calendar {
         width: 100%;
-        background-color: $color_white;
-        display: inline-flex;
-        min-height: 155px;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        & div {
-            flex: 0 1 14.28%;
-            color: $color_primary_darkblue;
-            &:not(:first-child) {
-                border-left: 1px solid $color_border;
+        margin-top: 10px;
+        & .date_item_container {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: 100px auto;
+            grid-template-rows: 1fr;
+            grid-template-areas: "left right";
+
+            &.today {
+                & .left .header_pin_date_container {
+                    color: $color_primary_darkblue;
+                    background-color: #cfdefdfd;
+                    & + .line {
+                        background-color: #cfdefdfd !important;
+                    }
+                }
+
+                & .right {
+                    background-color: $color_white;
+                    & .list_planner_container .body_pin_date_container {
+                        opacity: 1;
+                    }
+                }
+            }
+
+            &.disabled {
+                & .left .header_pin_date_container {
+                    color: $color_disabled_text;
+                    background-color: #e9e9e9 !important;
+                    & + .line {
+                        background-color: #e9e9e9 !important;
+                    }
+                }
+                & .right .list_planner_container {
+                    opacity: 0.3;
+                }
+            }
+
+            & .left {
+                grid-area: left;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-flow: row wrap;
+                & .header_pin_date_container {
+                    border: 1px solid $color_shadow;
+                    top: -10px;
+                    position: absolute;
+                    background-color: $color_bg_blue;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-flow: column wrap;
+                    height: 80px !important;
+                    width: 80px !important;
+                    border-radius: 50%;
+                    color: $color_app_text;
+                    @include prefix(box-shadow, 0px 1px 5px 2px $color_shadow !important, moz webkit);
+
+                    & label:first-child {
+                        font-size: 13px;
+                        font-weight: 550;
+                    }
+
+                    & label:last-child {
+                        margin-top: -8px;
+                        font-size: 24px;
+                        font-weight: bold;
+                    }
+
+                    &.disabled {
+                        color: $color_disabled_text;
+                        background-color: #e9e9e9 !important;
+                        &.disabled + .line {
+                            background-color: #e9e9e9 !important;
+                        }
+                    }
+
+                    &.today {
+                        color: $color_primary_darkblue;
+                        background-color: #cfdefdfd;
+                        &.today + .line {
+                            background-color: #cfdefdfd !important;
+                        }
+                    }
+                }
+
+                & .line {
+                    border: 1px solid $color_shadow;
+                    background-color: $color_bg_blue;
+                    @include prefix(box-shadow, 0px 1px 5px 2px $color_shadow !important, moz webkit);
+                    width: 10px;
+                    height: calc(100% + 10px);
+                    border-radius: 5px;
+                }
+            }
+
+            & .right {
+                width: auto;
+                min-height: 70px;
+                grid-area: right;
+                border-radius: 10px;
+                & .list_planner_container {
+                    position: relative;
+                    height: 100%;
+                    border-bottom: 1px solid $color_border;
+                    & .body_pin_date_container {
+                        opacity: 0.7;
+                        & .item_planner {
+                            position: relative;
+                            margin: 5px 5px;
+                            padding: 0px 10px;
+                            padding-right: 30px;
+                            border-radius: 10px;
+                            width: 100%;
+                            display: flex;
+                            justify-content: start;
+                            align-items: flex-start;
+                            flex-flow: row nowrap;
+
+                            & .line {
+                                left: 0;
+                                top: 0;
+                                position: absolute;
+                                height: 5px;
+                                width: calc(100% - 10px);
+                            }
+
+                            &.first_color {
+                                & .line {
+                                    background-color: $first_color;
+                                }
+                            }
+
+                            &.second_color {
+                                & .line {
+                                    background-color: $second_color;
+                                }
+                            }
+
+                            &.third_color {
+                                & .line {
+                                    background-color: $third_color;
+                                }
+                            }
+
+                            & img {
+                                margin-top: 10px;
+                                height: 20px;
+                                width: 20px;
+                            }
+
+                            & .planner_desc_container {
+                                margin-top: 5px;
+                                margin-left: 5px;
+                                width: 100%;
+                                display: inline-flex;
+                                flex-flow: column wrap;
+                                & .planner_taskname {
+                                    // display: inline-block;
+                                    // overflow: hidden;
+                                    // white-space: nowrap;
+                                    width: auto;
+                                    font-size: 15px;
+                                    color: $color_primary_text;
+                                    letter-spacing: 1px;
+                                    font-weight: bold;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    & .planner_period {
+                                        font-size: 13px;
+                                        letter-spacing: 0px;
+                                        color: $color_primary_text;
+                                        font-weight: 550;
+                                        width: auto;
+                                    }
+                                }
+
+                                & .planner_owner {
+                                    display: inline-block;
+                                    overflow: hidden;
+                                    white-space: nowrap;
+                                    font-size: 13px;
+                                    width: 100%;
+                                    color: $color_app_text;
+                                    font-weight: 550;
+                                    text-overflow: ellipsis;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+}
+
+@keyframes slide {
+    from {
+        margin-left: 100%;
+    }
+    to {
+        margin-left: 0px;
     }
 }
 
@@ -936,26 +1519,78 @@ $color_hover: #e9e9e9;
 
     .week_calendar_overview_container {
         & .top_week_calendar {
-            font-size: 15px;
+            font-size: 14px;
 
             & label:last-child {
-                margin-left: 10px;
+                margin-left: 5px;
             }
 
-            & .week_desc {
-                font-size: 12px;
+            & .button_container {
+                display: flex;
+
+                & button {
+                    height: 20px;
+                    width: 20px;
+
+                    & img {
+                        height: 10px;
+                        width: 10px;
+                    }
+                }
+            }
+        }
+
+        & .week_calendar {
+            display: none;
+        }
+
+        & .week_pin_calendar {
+            position: relative;
+            margin-top: 10px;
+            & .date_item_container {
+                grid-template-columns: 60px auto;
+                grid-template-rows: 1fr;
+                grid-template-areas: "left right";
+                & .left .header_pin_date_container {
+                    height: 55px !important;
+                    width: 55px !important;
+                    & label:first-child {
+                        font-size: 13px;
+                        font-weight: 550;
+                    }
+
+                    & label:last-child {
+                        margin-top: -4px;
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+                }
             }
         }
     }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
-@media only all and (min-width: 600px) {
+@media only all and (min-width: 630px) {
     .calendar_container {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
         grid-template-areas: "left" "right";
+    }
+
+    .week_calendar_overview_container {
+        & .top_week_calendar {
+            font-size: 18px;
+        }
+
+        & .week_calendar {
+            display: none;
+        }
+
+        & .week_pin_calendar {
+            display: block;
+        }
     }
 }
 
@@ -966,6 +1601,20 @@ $color_hover: #e9e9e9;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
         grid-template-areas: "left" "right";
+    }
+
+    .week_calendar_overview_container {
+        & .top_week_calendar {
+            font-size: 24px;
+        }
+
+        & .week_calendar {
+            display: block;
+        }
+
+        & .week_pin_calendar {
+            display: none;
+        }
     }
 }
 
@@ -986,6 +1635,263 @@ $color_hover: #e9e9e9;
         grid-template-columns: 1fr 3fr;
         grid-template-rows: 1fr;
         grid-template-areas: "left right";
+    }
+}
+.planner_create_button {
+    border: none;
+    background-color: $color_primary_darkblue;
+    padding: 5px 7px;
+    color: $color_white;
+    font-weight: 550;
+    letter-spacing: 1px;
+    border-radius: 10px;
+    width: 80px;
+}
+
+.planner_form {
+    border: 1px solid $color_border !important;
+    margin-top: 5px;
+    border-radius: 10px;
+    z-index: 2;
+    position: absolute;
+    height: auto;
+    max-width: 100%;
+    width: 400px;
+    background-color: white;
+    @include prefix(box-shadow, 0px 1px 20px 2px $color_shadow !important, moz webkit);
+    @include prefix(animation, scale-popup 0.3s, moz webkit);
+
+    & .planner_form_add_label {
+        color: $color_app_text;
+        font-weight: 550;
+        letter-spacing: 1px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+}
+
+.planner_container {
+    width: 100%;
+    position: relative;
+    overflow-x: auto;
+    @include prefix(box-shadow, 0px 1px 5px 2px $color_shadow !important, moz webkit);
+    border-radius: 10px;
+    white-space: nowrap;
+    display: flex;
+    flex-flow: row wrap;
+    & .header_planner_calendar {
+        width: auto;
+        position: relative;
+        display: inline-block;
+        & div {
+            height: 50px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 100px;
+            background-color: $color_bg_blue;
+            text-align: center;
+            color: $color_app_text;
+
+            &:nth-child(1) {
+                @include prefix(position, sticky, moz webkit);
+                left: 0;
+                border-right: 1px solid $color_border;
+                width: 150px;
+            }
+
+            &:nth-child(2) {
+                border-left: none !important;
+            }
+
+            &:not(:first-child) {
+                border-left: 1px solid $color_border;
+            }
+
+            & label:first-child {
+                font-size: 15px;
+                font-weight: 550;
+            }
+
+            & label:last-child {
+                margin: 0px 5px;
+                font-size: 15px;
+                font-weight: 550;
+            }
+        }
+    }
+
+    & .body_planner_calendar {
+        top: 50px;
+        position: absolute;
+        height: calc(100% - 50px);
+        width: auto;
+        display: inline-block;
+        & .body_container {
+            position: relative;
+            width: auto;
+            width: 100%;
+            height: 100%;
+            & div {
+                display: inline-block;
+                width: 100px;
+                height: 100%;
+                background-color: white;
+                &:nth-child(1) {
+                    @include prefix(position, sticky, moz webkit);
+                    left: 0;
+                    width: 150px;
+                    border-right: 1px solid $color_border;
+                    z-index: 1;
+                    background-color: white;
+                }
+
+                &:nth-child(2) {
+                    border-left: none !important;
+                }
+
+                &:not(:first-child) {
+                    border-left: 1px solid $color_border;
+                }
+            }
+        }
+    }
+
+    & .list_planner_container {
+        @include prefix(animation, slide 0.3s, moz webkit);
+        position: relative;
+        display: inline-block;
+        height: 100%;
+        min-height: 200px;
+        & .body_container {
+            position: relative;
+            height: 100%;
+            // width: auto;
+            display: block;
+            // & .bg {
+            //     position: relative;
+            //     // display: inline-block;
+            //     width: 100px;
+            // }
+            & .group_container {
+                margin-top: 10px;
+                display: block;
+                position: relative;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+                width: calc(100% + 50px);
+                border-bottom: 1px solid $color_border;
+                & .owner {
+                    @include prefix(position, sticky, moz webkit);
+                    left: 0;
+                    z-index: 1;
+                    width: 150px;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    padding-left: 10px;
+                    color: $color_app_text;
+                    font-weight: 550;
+                }
+
+                & .item_planner {
+                    white-space: initial;
+                    display: flex;
+                    flex-flow: row wrap;
+                    position: relative;
+                    margin-left: 150px;
+                    width: 100px;
+                    padding: 0px 0px;
+                    height: auto;
+                    border-bottom-left-radius: 5px;
+                    border-bottom-right-radius: 5px;
+                    overflow: hidden;
+                    // background-color: #ff82748e;
+
+                    &:hover {
+                        @include prefix(transition, 0.3s, moz webkit);
+                        background-color: #fcb0a8;
+                    }
+
+                    & .planner_desc_container {
+                        margin-top: 5px;
+                        margin-left: 5px;
+                        display: flex;
+                        justify-content: start;
+                        flex-flow: column nowrap;
+                        width: 100%;
+
+                        & .planner_taskname {
+                            display: inline-block;
+                            // overflow: hidden;
+                            // white-space: nowrap;
+                            font-size: 15px;
+                            color: $color_primary_text;
+                            letter-spacing: 1px;
+                            font-weight: bold;
+                            // overflow: hidden !important;
+                            // text-overflow: ellipsis;
+                            & .planner_period {
+                                display: inline-block;
+                                font-size: 13px;
+                                letter-spacing: 0px;
+                                color: $color_primary_text;
+                                font-weight: 550;
+                            }
+                        }
+
+                        & .planner_owner {
+                            // display: inline-block;
+                            // overflow: hidden;
+                            // white-space: nowrap;
+                            font-size: 13px;
+                            width: 100%;
+                            color: $color_app_text;
+                            font-weight: 550;
+                            text-overflow: ellipsis;
+                        }
+                    }
+
+                    &:nth-child(2) {
+                        margin-top: -23px;
+                    }
+
+                    & .line {
+                        position: absolute;
+                        background-color: #fcb0a8;
+                        height: 5px;
+                        width: 100%;
+                        margin-bottom: 0px;
+                    }
+
+                    &.second {
+                        margin-left: 250px;
+                        width: 1200px;
+                        height: 50px;
+                    }
+
+                    &.third {
+                        margin-left: 550px;
+                        width: 700px;
+                        height: 50px;
+                    }
+                }
+            }
+        }
+
+        // & .owner {
+        //     display: inline-flex;
+        //     @include prefix(position, sticky !important, moz webkit);
+        //     justify-content: center;
+        //     align-items: center;
+        //     left: 0;
+        //     z-index: 1;
+        //     width: 100px;
+        //     height: 100%;
+        //     background-color: yellow;
+        // }
+        // }
     }
 }
 
@@ -1050,7 +1956,7 @@ $color_hover: #e9e9e9;
     }
 }
 
-@media only screen and (max-height: 500px) {
+@media only all and (max-height: 500px) {
     .login_bg_container {
         & .center {
             padding-top: 10px;
@@ -1095,16 +2001,18 @@ div[class*="col-"] {
     padding: 5px 15px;
     border-radius: 10px;
     background-color: $color_white;
-    width: inherit;
+    width: 100%;
+    position: relative;
     &.disabled {
         background-color: $color_primary_bg !important;
-        pointer-events:none;
+        pointer-events: none;
     }
 
     & .input_group {
         position: relative;
         width: 100%;
         & label {
+            margin-bottom: 5px;
             font-size: 12px;
             font-weight: 600;
             color: $color_app_text;
@@ -1122,9 +2030,142 @@ div[class*="col-"] {
             &:disabled {
                 background-color: $color_primary_bg;
             }
+
+            &::placeholder {
+                color: $color_disabled_text;
+                font-weight: normal;
+                letter-spacing: 2px;
+            }
         }
 
-        
+        & .date_container {
+            position: relative;
+            height: 35px !important;
+            width: 100%;
+
+            & .date_picker {
+                position: relative;
+                width: 100%;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                margin-top: -7px;
+
+                & div {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    padding-top: 3px;
+                    margin-left: 2px;
+                    font-weight: 600;
+                    color: $color_primary_text !important;
+                    width: 100%;
+                }
+
+                & img {
+                    height: 20px;
+                    width: 20px;
+                    filter: brightness(0.5);
+                }
+            }
+
+            & .underline {
+                display: inline-block;
+                position: absolute;
+                height: 2px;
+                border-radius: 10px;
+                width: 100%;
+                left: 0;
+                bottom: 0;
+                transform: scale(0);
+                background-color: $color_border !important;
+                @include prefix(transform, scale(0, 1), moz webkit);
+                @include prefix(transition, all 0.2s linear, moz webkit);
+
+                &.focus {
+                    transform: scale(1);
+                }
+            }
+
+            & .duration_picker_container {
+                @include prefix(animation, scale-popup 0.2s, moz webkit);
+                position: absolute;
+                height: 100%;
+
+                & .collaspe_button {
+                    position: absolute;
+                    height: 30px;
+                    width: 30px;
+                    right: 0;
+                    border-radius: 5px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    @include prefix(user-select, none, moz webkit);
+                    border: none;
+                    background-color: transparent;
+                    & img {
+                        height: 12px;
+                        width: 12px;
+                        filter: brightness(1.5);
+                    }
+
+                    &:hover {
+                        transition: 0.3s;
+                        box-shadow: 0px 2px 10px 2px $color_shadow;
+
+                        & img {
+                            transition: 0.3s;
+                            filter: brightness(1);
+                        }
+                    }
+                }
+
+                & .duration_calendar_container {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    overflow-x: auto;
+                    & .line {
+                        width: 1px;
+                        height: auto;
+                        margin: 0px 20px;
+                        background-color: $color_border;
+                    }
+
+                    & .month_calendar_container {
+                        width: 500px;
+                        & label {
+                            margin-top: 10px;
+                        }
+                        & .top_month_calendar {
+                            margin-top: 0px;
+                            & label {
+                                margin-left: 5px;
+                                font-size: 15px;
+                                margin-top: 2px;
+                            }
+                        }
+                        & .header_month_calendar {
+                            margin-top: 5px;
+                            display: flex;
+                            & div {
+                                font-size: 12px !important;
+                            }
+                        }
+
+                        & .body_month_calendar {
+
+                            & .today {
+                                background-color: $color_bg_blue;
+                                border-radius: 25px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         & .select_container {
             position: relative;
@@ -1141,6 +2182,9 @@ div[class*="col-"] {
                 margin-top: -7px;
 
                 & div {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     padding-top: 3px;
                     margin-left: 2px;
                     font-weight: 600;
@@ -1241,6 +2285,74 @@ div[class*="col-"] {
     }
     to {
         border-bottom: 1px solid $color_primary_darkblue !important;
+    }
+}
+
+@media only all and (max-width: 630px) {
+    .input_container {
+        & .date_container {
+            & .duration_picker_container {
+                width: auto !important;
+                & .duration_calendar_container {
+                    display: flex;
+                    flex-flow: column nowrap !important;
+                    overflow-x: auto;
+                    & .line {
+                        width: auto !important;
+                        height: 1px !important;
+                        margin: 0px 0px !important;
+                        background-color: $color_border;
+                    }
+
+                    & .month_calendar_container {
+                        width: auto !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only all and (min-width: 600px) {
+    .input_container {
+        & .date_container {
+            & .duration_picker_container {
+                width: auto !important;
+                & .duration_calendar_container {
+                    display: flex;
+                    flex-flow: column nowrap !important;
+                    overflow-x: auto;
+                    & .line {
+                        width: auto !important;
+                        height: 1px !important;
+                        margin: 0px 0px !important;
+                        background-color: $color_border;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only all and (min-width: 768px) {
+    .input_container {
+        & .date_container {
+            & .duration_picker_container {
+                width: 550px !important;
+                & .duration_calendar_container {
+                    display: flex;
+                    flex-flow: row nowrap !important;
+                    overflow-x: auto;
+                    & .line {
+                        width: 1px !important;
+                        height: auto !important;
+                        margin: 0px 20px !important;
+                        background-color: $color_border;
+                    }
+                }
+            }
+        }
     }
 }
 
