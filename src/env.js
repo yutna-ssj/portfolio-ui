@@ -9,4 +9,4 @@ const env_config = {
     PRODUCTION: { url: 'https://yuttana-portfolio-api.herokuapp.com', basename: '/behavior', app_root: '/app', status: DeployStatus.PRODUCTION }
 }
 
-export const env = env_config.DEV;
+export const env = env_config.PRODUCTION;
