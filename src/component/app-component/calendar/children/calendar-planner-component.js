@@ -32,7 +32,7 @@ export default class CalendarPlanner extends React.Component {
     }
 
     getSubUsers = () => {
-        http(HTTP_METHOD.GET, env.url + '/api/sub_users/get').then((res) => {
+        http(HTTP_METHOD.GET, env.url + '/api/user/sub-user/get-by-user').then((res) => {
             this.setState({ subUserOptions: res });
         }).catch((err) => {
 
@@ -40,7 +40,7 @@ export default class CalendarPlanner extends React.Component {
     }
 
     getPlannerTypes = () => {
-        http(HTTP_METHOD.GET, env.url + '/api/calendar/planner/planner_types/get').then((res) => {
+        http(HTTP_METHOD.GET, env.url + '/api/calendar/planner/plan-type/get-all').then((res) => {
             this.setState({ plannerTypeOptions: res });
         }).catch((err) => {
 

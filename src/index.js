@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import './component/style.scss';
 import reportWebVitals from './reportWebVitals';
-import CoreComponent from './component/core-component/core-component';
 import CoreRouter from './router/core-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';

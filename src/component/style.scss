@@ -27,7 +27,7 @@ $color_loading: #4b4b4b3f;
     background-color: $color_loading;
     width: 100%;
     height: 100vh;
-    z-index: 1;
+    z-index: 10;
     position: absolute;
     top: 0;
     display: flex;
@@ -481,12 +481,12 @@ $color_loading: #4b4b4b3f;
 .app {
     overflow-y: auto !important;
     width: 100%;
+    height: calc(100vh - 45px);
 }
 .app_container {
     padding-top: 15px;
+    padding-bottom: 40px;
     position: relative;
-
-    height: calc(100vh - 45px);
     & .app_name {
         color: $color_app_text;
         font-size: 27px;

@@ -17,7 +17,7 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        http(HTTP_METHOD.GET, env.url + '/profiles/get').then((res) => {
+        http(HTTP_METHOD.GET, env.url + '/auth/profile/get-all').then((res) => {
             this.setState({ userOptions: res });
         }).catch((err) => {
             console.log(err);

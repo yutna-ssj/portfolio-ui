@@ -24,7 +24,7 @@ export default class CalendarDashBoard extends React.Component {
 
     componentDidMount() {
 
-        http(HTTP_METHOD.GET, env.url + '/api/calendar/dashboard/planners/getByUser').then((res) => {
+        http(HTTP_METHOD.GET, env.url + '/api/calendar/planner/dashboard/get-by-user').then((res) => {
             this.setState({ planners: res });
         }).catch((err) => {
             console.log(err);
