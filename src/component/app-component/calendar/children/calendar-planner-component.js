@@ -263,7 +263,7 @@ export default class CalendarPlanner extends React.Component {
                                 )}
                             </div>
                         </div>
-                        <div className='list_planner_container'  key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()}>
+                        <div className='list_planner_container' key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()}>
                             <div className='body_container'>
                                 {/* <div className='bg'></div>
                                 {calendar.datesOfCalendar[weeks[0]].map((item, index) =>
@@ -358,7 +358,7 @@ const PlannerEvents = (props) => {
 
             if (start !== -1 && end !== 0) {
                 eventsByUser.push(
-                    <div div className='item_planner' style={{ marginLeft: (start * 100) + 150 + 'px', width: end * 100 + 'px' }}>
+                    <div key={i} className='item_planner' style={{ marginLeft: (start * 100) + 150 + 'px', width: end * 100 + 'px' }}>
                         <div className='line' style={{ backgroundColor: '#' + tempItemEvent.plannerType.typeColor + '8e' }} />
                         <div className='planner_desc_container'>
                             <label className='planner_taskname'>{tempItemEvent.taskName} <label className='planner_period'>({monthsOfYear[tempItemEvent.startDate[1] - 1].substr(0, 3)} {tempItemEvent.startDate[2]}, {tempItemEvent.startDate[0]} - {monthsOfYear[tempItemEvent.endDate[1] - 1].substr(0, 3)} {tempItemEvent.endDate[2]}, {tempItemEvent.endDate[0]})</label></label>
@@ -369,7 +369,7 @@ const PlannerEvents = (props) => {
             }
 
         }
-        plannerEvents.push(<div className='group_container'>
+        plannerEvents.push(<div key={item} className='group_container'>
             <div className='owner'>
                 {item}
             </div>
