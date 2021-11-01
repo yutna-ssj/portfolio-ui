@@ -524,12 +524,12 @@ $color_loading: #4b4b4b3f;
     & img {
         width: 150px;
         height: 150px;
+        margin: 15px 20px;
     }
 
     & .message {
         padding: 20px;
         width: auto;
-        margin-left: 10px;
         & .header {
             color: $color_app_text;
             font-weight: bold;
