@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { store } from '../..';
 import { env } from '../../env';
 import { AuthAction } from '../../redux/reducer';
-import { SelectInput, TextInput } from '../share-component/input-component';
+import { SelectInput } from '../share-component/input-component';
 import MessageComponent, { MESSAGE_TYPE } from '../share-component/message-component';
 import { http, HTTP_METHOD } from '../share-service/http-service';
 import LoadingComponent from './loading-component';

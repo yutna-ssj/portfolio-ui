@@ -1,7 +1,5 @@
 import React from 'react';
 import calendar from '../../assets/calendar.svg';
-import shopping_cart from '../../assets/shopping-cart.svg'
-import covid from '../../assets/virus.svg'
 import x from '../../assets/x.png';
 class LeftComponent extends React.Component {
 
