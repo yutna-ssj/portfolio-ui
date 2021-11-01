@@ -60,7 +60,7 @@ class Login extends React.Component {
                     <div className='container center'>
                         <div className='card login_container'>
                             <label className='logo'>Yuttana's Portfolio</label>
-                            <div className='profile_badge' style={{ overflow: 'hidden' }}>{userID ? <img src={env.url + '/auth/profile/image/get-by-user/' + userID} style={{ height: '150px', width: '150px' }} /> : null} </div>
+                            <div className='profile_badge' style={{ overflow: 'hidden' }}>{userID ? <img key={userID} alt={userID} src={env.url + '/auth/profile/image/get-by-user/' + userID} style={{ height: '150px', width: '150px' }} /> : null} </div>
                             <label className='profile_name'>{userID ? 'You will log in as ' + userOptions.find((user) => user.userID === parseInt(userID)).username + ' !' : 'Please select a profile !'}</label>
                             <div className='container'>
                                 <div className='row'>
