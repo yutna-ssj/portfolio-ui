@@ -1,11 +1,11 @@
 import React from "react";
 import ContentBox from "../../../share-component/content-box-component";
 import arrow from '../../../../assets/arrow.svg';
-import { checkLeftYear } from '../../../share-service/share-service';
 import { DurationInput, SelectInput, TextInput } from "../../../share-component/input-component";
 import MessageComponent, { MESSAGE_TYPE } from "../../../share-component/message-component";
 import { http, HTTP_METHOD } from "../../../share-service/http-service";
 import { env } from "../../../../env";
+import banner from "../../../../assets/planner-banner.svg";
 
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -149,6 +149,14 @@ export default class CalendarPlanner extends React.Component {
                             </div>
                         </div>
                         <div className='right'>
+                            <div className='info_app_container'>
+                                <img src={banner} />
+                                <div className='message'>
+                                    <div className='header'>WELCOME TO CALENDAR PLANNER</div>
+                                    <div className='content'>This is app for making plan. The users can see their tasks and subordinates tasks,
+                                        they can make some assignment to others depend on their role and manage their tasks was assigned.</div>
+                                </div>
+                            </div>
                             <div className='week_calendar_overview_container'>
                                 <div className='top_week_calendar'>
                                     <div className='button_container'>
@@ -157,9 +165,6 @@ export default class CalendarPlanner extends React.Component {
                                     </div>
                                     <label>{monthsOfYear[calendar.datesOfCalendar[weeks[0]][0].month - 1]} {calendar.datesOfCalendar[weeks[0]][0].date}, {calendar.datesOfCalendar[weeks[0]][0].year} - {monthsOfYear[calendar.datesOfCalendar[weeks[1]][6].month - 1]} {calendar.datesOfCalendar[weeks[1]][6].date}, {calendar.datesOfCalendar[weeks[1]][6].year}</label>
                                 </div>
-                            </div>
-                            <div className='card'>
-                                Welcome to planner calendar.
                             </div>
                             <div className='planner_button_container'>
                                 <div ref={this.buttonRef} style={{ width: 'auto' }}>
