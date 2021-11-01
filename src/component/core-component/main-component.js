@@ -58,7 +58,7 @@ class MainComponent extends React.Component {
 
     render() {
         const { isNavOpen } = this.state;
-        const { onCollapse, logged } = this.props;
+        const { onCollapse, logged, logged_id } = this.props;
         return (<div className='main_component'>
             <div className='top_bar_container'>
                 <div className='top_bar_left'>
@@ -76,10 +76,16 @@ class MainComponent extends React.Component {
                             <img alt='arrow' src={arrow} />
                         </div>
                         {isNavOpen ?
-                            <div className='top_bar_group_nav'>
-                                <div className='top_bar_nav'>About me</div>
-                                <div className='top_bar_nav' onClick={(e) => this.onLogOut()}>Log out</div>
-                            </div>
+                            <React.Fragment>
+
+                                <div className='top_bar_group_nav'>
+                                    <div className='top_bar_profile_container'>
+                                        <div className='sm_profile_badge'><img src={env.url + '/auth/profile/image/get-by-user/' + logged_id} /></div>
+                                    </div>
+                                    <div className='top_bar_nav'>About me</div>
+                                    <div className='top_bar_nav' onClick={(e) => this.onLogOut()}>Log out</div>
+                                </div>
+                            </React.Fragment>
                             : null}
                     </div>
                 </div>

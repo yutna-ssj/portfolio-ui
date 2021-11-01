@@ -28,7 +28,7 @@ class Login extends React.Component {
         const { userOptions, userID } = this.state;
         if (this.validateLogIn()) {
             http(HTTP_METHOD.POST, env.url + '/auth/login', { userID: this.state.userID }).then((res) => {
-                store.dispatch({ type: AuthAction.LOGIN_SUCCESS, payload: { user_id: userOptions.find((user) => user.userID === parseInt(userID)).username } });
+                store.dispatch({ type: AuthAction.LOGIN_SUCCESS, payload: { username: userOptions.find((user) => user.userID === parseInt(userID)).username, user_id: userOptions.find((user) => user.userID === parseInt(userID)).userID } });
                 this.props.history.push('/calendar')
             }).catch((err) => {
                 console.log(err);

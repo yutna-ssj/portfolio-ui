@@ -21,7 +21,8 @@ export default class CalendarPlanner extends React.Component {
             isNewCreate: false,
             createForm: { name: '', assignTo: '', type: '', fromDate: [today.getFullYear(), today.getMonth() + 1, today.getDate()], toDate: [today.getFullYear(), today.getMonth() + 1, today.getDate()] },
             subUserOptions: [],
-            plannerTypeOptions: []
+            plannerTypeOptions: [],
+            plannerEvents: []
         }
     }
 
@@ -29,6 +30,12 @@ export default class CalendarPlanner extends React.Component {
         document.addEventListener('mousedown', this.onDocClick);
         this.getSubUsers();
         this.getPlannerTypes();
+
+        http(HTTP_METHOD.GET, env.url + '/api/calendar/planner/get-by-user').then((res) => {
+            this.setState({ plannerEvents: res });
+        }).catch((err) => {
+
+        });
     }
 
     getSubUsers = () => {
@@ -107,7 +114,7 @@ export default class CalendarPlanner extends React.Component {
     render() {
         const { show, calendar, today } = this.props;
 
-        const { isNewCreate, createForm, subUserOptions, plannerTypeOptions } = this.state;
+        const { isNewCreate, createForm, subUserOptions, plannerTypeOptions, plannerEvents } = this.state;
         const weeks = [];
         if (calendar.week % 2 === 0) {
             weeks.push(calendar.week)
@@ -154,38 +161,52 @@ export default class CalendarPlanner extends React.Component {
                             <div className='card'>
                                 Welcome to planner calendar.
                             </div>
-                            <div ref={this.buttonRef}>
-                                <button className='planner_create_button' onClick={() => this.setState({ isNewCreate: true })}>New</button>
-                                {isNewCreate ? <div className='planner_form'>
-                                    <div className='container' style={{ marginTop: '20px' }}>
-                                        <label className='planner_form_add_label'>Create new assignment</label>
-                                        <div className='row'>
-                                            <div className='col-sm-12' >
-                                                <TextInput label='Name' value={createForm.name} placeholder='Name' onChange={(e) => this.setState({ createForm: { ...createForm, name: e } })} />
-                                            </div>
-                                            <div className='col-sm-6'>
-                                                <SelectInput label='Assign to' value={createForm.assignTo} onChange={(e) => this.setState({ createForm: { ...createForm, assignTo: e } })} >
-                                                    <option value='' disabled>Select user</option>
-                                                    <option value='0'>Me</option>
-                                                    {subUserOptions.map((option, index) => <option key={index} value={option.userID.toString()}>{option.username}</option>)}
-                                                </SelectInput>
-                                            </div>
-                                            <div className='col-sm-6'>
-                                                <SelectInput label='Type' value={createForm.type} onChange={(e) => this.setState({ createForm: { ...createForm, type: e } })} >
-                                                    <option value='' disabled>Select type</option>
-                                                    {plannerTypeOptions.map((option, index) => <option key={index} value={option.plannerTypeID.toString()}>{option.typeName}</option>)}
-                                                </SelectInput>
-                                            </div>
-                                            <div className='col-sm-12' >
-                                                <DurationInput label='Date duration' fromDateValue={createForm.fromDate} toDateValue={createForm.toDate} onChange={(fromDate, toDate) => { this.setState({ createForm: { ...createForm, fromDate: fromDate, toDate: toDate } }) }} />
-                                            </div>
-                                            {/* <div className='col-sm-12'>
+                            <div className='planner_button_container'>
+                                <div ref={this.buttonRef} style={{ width: 'auto' }}>
+                                    <button className='planner_create_button' onClick={() => this.setState({ isNewCreate: true })}>New</button>
+                                    {isNewCreate ? <div className='planner_form'>
+                                        <div className='container' style={{ marginTop: '20px' }}>
+                                            <label className='planner_form_add_label'>Create new assignment</label>
+                                            <div className='row'>
+                                                <div className='col-sm-12' >
+                                                    <TextInput label='Name' value={createForm.name} placeholder='Name' onChange={(e) => this.setState({ createForm: { ...createForm, name: e } })} />
+                                                </div>
+                                                <div className='col-sm-6'>
+                                                    <SelectInput label='Assign to' value={createForm.assignTo} onChange={(e) => this.setState({ createForm: { ...createForm, assignTo: e } })} >
+                                                        <option value='' disabled>Select user</option>
+                                                        <option value='0'>Me</option>
+                                                        {subUserOptions.map((option, index) => <option key={index} value={option.userID.toString()}>{option.username}</option>)}
+                                                    </SelectInput>
+                                                </div>
+                                                <div className='col-sm-6'>
+                                                    <SelectInput label='Type' value={createForm.type} onChange={(e) => this.setState({ createForm: { ...createForm, type: e } })} >
+                                                        <option value='' disabled>Select type</option>
+                                                        {plannerTypeOptions.map((option, index) => <option key={index} value={option.plannerTypeID.toString()}>{option.typeName}</option>)}
+                                                    </SelectInput>
+                                                </div>
+                                                <div className='col-sm-12' >
+                                                    <DurationInput label='Date duration' fromDateValue={createForm.fromDate} toDateValue={createForm.toDate} onChange={(fromDate, toDate) => { this.setState({ createForm: { ...createForm, fromDate: fromDate, toDate: toDate } }) }} />
+                                                </div>
+                                                {/* <div className='col-sm-12'>
                                             <MessageComponent type={MESSAGE_TYPE.SUCCESS} />
                                         </div> */}
-                                            <button className='button border_bottom_radius' onClick={(e) => { }}>Save</button>
+                                                <button className='button border_bottom_radius' onClick={(e) => { }}>Save</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div> : null}
+                                    </div> : null}
+                                </div>
+                                {/* <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
+                                    <label className ="form-check-label" for="flexCheckDefault">
+                                    Default checkbox
+                                    </label>
+                                </div>
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
+                                    <label className ="form-check-label" for="flexCheckChecked">
+                                    Checked checkbox
+                                    </label>
+                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -234,17 +255,15 @@ export default class CalendarPlanner extends React.Component {
                                 </div>
                                 {calendar.datesOfCalendar[weeks[0]].map((item, index) =>
                                     <div key={index}>
-
                                     </div>
                                 )}
                                 {calendar.datesOfCalendar[weeks[1]].map((item, index) =>
                                     <div key={index}>
-
                                     </div>
                                 )}
                             </div>
                         </div>
-                        <div className='list_planner_container'>
+                        <div className='list_planner_container'  key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()}>
                             <div className='body_container'>
                                 {/* <div className='bg'></div>
                                 {calendar.datesOfCalendar[weeks[0]].map((item, index) =>
@@ -255,58 +274,8 @@ export default class CalendarPlanner extends React.Component {
                                     <div className='bg' key={index}>
                                     </div>
                                 )} */}
-                                <div className='group_container'>
-                                    <div className='owner'>
-                                        Pingu
-                                    </div>
-                                    <div className='item_planner'>
-                                        <div className='line' />
-                                        <div className='planner_desc_container'>
-                                            <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
-                                            <label className='planner_owner'>Assigned by Ice Ice</label>
-                                        </div>
-                                    </div>
-                                    <div className='item_planner second'>
-                                        <div className='line' />
-                                        <div className='planner_desc_container'>
-                                            <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
-                                            <label className='planner_owner'>Assigned by Ice Ice</label>
-                                        </div>
-                                    </div>
-                                    <div className='item_planner third'>
-                                        <div className='line' />
-                                        <div className='planner_desc_container'>
-                                            <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
-                                            <label className='planner_owner'>Assigned by Ice Ice</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='group_container'>
-                                    <div className='owner'>
-                                        Robot 3
-                                    </div>
-                                    <div className='item_planner'>
-                                        <div className='line' />
-                                        <div className='planner_desc_container'>
-                                            <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
-                                            <label className='planner_owner'>Assigned by Ice Ice</label>
-                                        </div>
-                                    </div>
-                                    <div className='item_planner second'>
-                                        <div className='line' />
-                                        <div className='planner_desc_container'>
-                                            <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
-                                            <label className='planner_owner'>Assigned by Ice Ice</label>
-                                        </div>
-                                    </div>
-                                    <div className='item_planner second'>
-                                        <div className='line' />
-                                        <div className='planner_desc_container'>
-                                            <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
-                                            <label className='planner_owner'>Assigned by Ice Ice</label>
-                                        </div>
-                                    </div>
-                                </div>
+
+                                {<PlannerEvents events={plannerEvents} weeks={calendar.datesOfCalendar[weeks[0]].concat(calendar.datesOfCalendar[weeks[1]])} />}
                             </div>
 
                             {/* <div>
@@ -355,4 +324,86 @@ export default class CalendarPlanner extends React.Component {
         </React.Fragment>);
     }
 
+}
+
+const PlannerEvents = (props) => {
+    const { events, weeks } = props;
+    const plannerEvents = [];
+    const tempEvents = events.reduce(function (rv, x) {
+        (rv[x['user']['username']] = rv[x['user']['username']] || []).push(x);
+        return rv;
+    }, {});
+
+    for (let item in tempEvents) {
+        const tempEventsByUser = tempEvents[item];
+        const eventsByUser = [];
+        for (let i = 0; i < tempEventsByUser.length; i++) {
+            const tempItemEvent = tempEventsByUser[i];
+            let start = -1;
+            let end = 0;
+
+            const start_dt = new Date(tempItemEvent.startDate[0], tempItemEvent.startDate[1] - 1, tempItemEvent.startDate[2]);
+            const end_dt = new Date(tempItemEvent.endDate[0], tempItemEvent.endDate[1] - 1, tempItemEvent.endDate[2]);
+
+            for (let j = 0; j < weeks.length; j++) {
+                const item_date = new Date(weeks[j].year, weeks[j].month - 1, weeks[j].date);
+
+                if (item_date.getTime() >= start_dt.getTime() && item_date.getTime() <= end_dt.getTime()) {
+                    if (start === -1) {
+                        start = j;
+                    }
+                    end++;
+                }
+            }
+
+            if (start !== -1 && end !== 0) {
+                eventsByUser.push(
+                    <div div className='item_planner' style={{ marginLeft: (start * 100) + 150 + 'px', width: end * 100 + 'px' }}>
+                        <div className='line' style={{ backgroundColor: '#' + tempItemEvent.plannerType.typeColor + '8e' }} />
+                        <div className='planner_desc_container'>
+                            <label className='planner_taskname'>{tempItemEvent.taskName} <label className='planner_period'>({monthsOfYear[tempItemEvent.startDate[1] - 1].substr(0, 3)} {tempItemEvent.startDate[2]}, {tempItemEvent.startDate[0]} - {monthsOfYear[tempItemEvent.endDate[1] - 1].substr(0, 3)} {tempItemEvent.endDate[2]}, {tempItemEvent.endDate[0]})</label></label>
+                            {/* <label className='planner_owner'>Assigned by Ice Ice</label> */}
+                        </div>
+                    </div>)
+
+            }
+
+        }
+        plannerEvents.push(<div className='group_container'>
+            <div className='owner'>
+                {item}
+            </div>
+            {eventsByUser}
+        </div>)
+    }
+
+    // <div className='group_container'>
+    //     <div className='owner'>
+    //         Robot 3
+    //     </div>
+    //     <div className='item_planner'>
+    //         <div className='line' />
+    //         <div className='planner_desc_container'>
+    //             <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
+    //             <label className='planner_owner'>Assigned by Ice Ice</label>
+    //         </div>
+    //     </div>
+    //     <div className='item_planner second'>
+    //         <div className='line' />
+    //         <div className='planner_desc_container'>
+    //             <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
+    //             <label className='planner_owner'>Assigned by Ice Ice</label>
+    //         </div>
+    //     </div>
+    //     <div className='item_planner second'>
+    //         <div className='line' />
+    //         <div className='planner_desc_container'>
+    //             <label className='planner_taskname'>Test three <label className='planner_period'>(Oct 1, 2021 - Nov 1, 2021)</label></label>
+    //             <label className='planner_owner'>Assigned by Ice Ice</label>
+    //         </div>
+    //     </div>
+    // </div>
+
+
+    return (<React.Fragment>{plannerEvents}</React.Fragment>)
 }

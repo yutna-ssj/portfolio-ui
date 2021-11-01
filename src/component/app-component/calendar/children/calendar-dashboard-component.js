@@ -95,7 +95,6 @@ export default class CalendarDashBoard extends React.Component {
 
         const { show, calendar, today } = this.props;
         const { planners } = this.state;
-        console.log(calendar);
         return (<React.Fragment>
             {show ? <React.Fragment>
                 <ContentBox id='1' title='Meetings Overview'>

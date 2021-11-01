@@ -4,19 +4,25 @@ export const AuthAction = {
     LOGOUT: 'LOGOUT'
 }
 
-export const authReducer = (state = { logged: localStorage.getItem('logged') }, action) => {
+export const authReducer = (state = {
+    logged: localStorage.getItem('yuttana_logged'),
+    logged_id: localStorage.getItem('yuttana_logged_id')
+}, action) => {
     switch (action.type) {
         case AuthAction.LOGIN_SUCCESS:
-            localStorage.setItem('logged', action.payload.user_id);
-            state = { logged: localStorage.getItem('logged') };
+            localStorage.setItem('yuttana_logged', action.payload.username);
+            localStorage.setItem('yuttana_logged_id', action.payload.user_id);
+            state = { logged: localStorage.getItem('yuttana_logged'), logged_id: localStorage.getItem('yuttana_logged_id') };
             return state;
         case AuthAction.LOGIN_FAILED:
-            localStorage.removeItem('logged');
-            state = { logged: localStorage.getItem('logged') };
+            localStorage.removeItem('yuttana_logged');
+            localStorage.removeItem('yuttana_logged_id');
+            state = { logged: localStorage.getItem('yuttana_logged'), logged_id: localStorage.getItem('yuttana_logged_id') };
             return state;
         case AuthAction.LOGOUT:
-            localStorage.removeItem('logged');
-            state = { logged: localStorage.getItem('logged') };
+            localStorage.removeItem('yuttana_logged');
+            localStorage.removeItem('yuttana_logged_id');
+            state = { logged: localStorage.getItem('yuttana_logged'), logged_id: localStorage.getItem('yuttana_logged_id') };
             return state;
         default:
             return state;

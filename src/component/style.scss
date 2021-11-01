@@ -1637,6 +1637,14 @@ $color_loading: #4b4b4b3f;
         grid-template-areas: "left right";
     }
 }
+
+.planner_button_container {
+    margin-bottom: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .planner_create_button {
     border: none;
     background-color: $color_primary_darkblue;
@@ -1645,7 +1653,7 @@ $color_loading: #4b4b4b3f;
     font-weight: 550;
     letter-spacing: 1px;
     border-radius: 10px;
-    width: 80px;
+    width: 60px;
 }
 
 .planner_form {
@@ -1780,7 +1788,7 @@ $color_loading: #4b4b4b3f;
                 position: relative;
                 padding-bottom: 10px;
                 margin-bottom: 10px;
-                width: calc(100% + 50px);
+                width: 1550px;
                 border-bottom: 1px solid $color_border;
                 & .owner {
                     @include prefix(position, sticky, moz webkit);
@@ -1801,6 +1809,7 @@ $color_loading: #4b4b4b3f;
                     flex-flow: row wrap;
                     position: relative;
                     margin-left: 150px;
+                    margin: 20px 0px;
                     width: 100px;
                     padding: 0px 0px;
                     height: auto;
@@ -1859,22 +1868,9 @@ $color_loading: #4b4b4b3f;
 
                     & .line {
                         position: absolute;
-                        background-color: #fcb0a8;
                         height: 5px;
                         width: 100%;
                         margin-bottom: 0px;
-                    }
-
-                    &.second {
-                        margin-left: 250px;
-                        width: 1200px;
-                        height: 50px;
-                    }
-
-                    &.third {
-                        margin-left: 550px;
-                        width: 700px;
-                        height: 50px;
                     }
                 }
             }
@@ -1922,23 +1918,6 @@ $color_loading: #4b4b4b3f;
                 color: $color_app_text;
                 margin: 20px 0px;
             }
-
-            & .profile_badge {
-                min-height: 100px;
-                min-width: 100px;
-                background-color: $color_shadow;
-                border-radius: 50%;
-                margin-bottom: 10px;
-                color: $color_app_text;
-                font-weight: bold;
-                font-size: 35px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                overflow: hidden;
-                @include prefix(box-shadow, 0px 2px 10px 2px $color_shadow, moz webkit);
-            }
-
             & .profile_name {
                 height: auto;
                 color: $color_app_text;
@@ -1954,6 +1933,55 @@ $color_loading: #4b4b4b3f;
             //     min-height: 500px !important;
             //     max-width: 400px;
             // }
+        }
+    }
+}
+
+.profile_badge {
+    min-height: 100px !important;
+    min-width: 100px !important;
+    max-width: 150px;
+    max-height: 150px;
+    background-color: $color_shadow;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    color: $color_app_text;
+    font-weight: bold;
+    font-size: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    @include prefix(box-shadow, 0px 2px 10px 2px $color_shadow, moz webkit);
+}
+
+.top_bar_profile_container {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid $color_border;
+    & .sm_profile_badge {
+        height: 150px !important;
+        width: 150px !important;
+        background-color: $color_shadow;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        color: $color_app_text;
+        font-weight: bold;
+        font-size: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+
+        @include prefix(box-shadow, 0px 2px 10px 2px $color_shadow, moz webkit);
+
+        & img {
+            height: 150px;
+            width: 150px;
         }
     }
 }

@@ -18,13 +18,13 @@ class CoreComponent extends React.Component {
 
     render() {
         const { isCollapse } = this.state;
-        const { isLoading, logged } = this.props;
+        const { isLoading, logged, logged_id } = this.props;
         return (
             <React.Fragment>
                 <LoadingComponent isLoading={isLoading} />
                 <div className='core_component'>
                     <LeftComponent onRouteChange={this.onRouteChanged} route={this.props.location.pathname} isCollapse={isCollapse} onCollapse={() => this.setState({ isCollapse: !isCollapse })} />
-                    <MainComponent logged={logged} onRouteChange={this.onRouteChanged} onCollapse={() => this.setState({ isCollapse: !isCollapse })} />
+                    <MainComponent logged={logged} logged_id={logged_id} onRouteChange={this.onRouteChanged} onCollapse={() => this.setState({ isCollapse: !isCollapse })} />
                 </div>
             </React.Fragment>);
     }
@@ -33,7 +33,8 @@ class CoreComponent extends React.Component {
 const mapStateToProps = (state) => {
     return {
         isLoading: state.httpState.isLoading,
-        logged: state.authState.logged
+        logged: state.authState.logged,
+        logged_id: state.authState.logged_id
     };
 };
 

@@ -237,7 +237,6 @@ export class DurationInput extends React.Component {
     render() {
         const { label, disabled, value, onChange, placeholder, fromDateValue, toDateValue } = this.props;
         const { firstCalendar, secondCalendar, isOpen, tempFromDate, tempToDate, errorMessages } = this.state;
-        console.log(errorMessages);
         return (<div className={disabled ? 'input_container disabled' : 'input_container'}>
             <div className='input_group'>
                 <label>{label}</label>
