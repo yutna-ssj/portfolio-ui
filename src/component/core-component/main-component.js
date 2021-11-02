@@ -9,12 +9,17 @@ import { AuthAction } from '../../redux/reducer';
 import { store } from '../..';
 
 class MainComponent extends React.Component {
+
+    userIcon = "";
+
     constructor(_props) {
         super(_props);
         this.state = { isNavOpen: false }
     }
 
     componentDidMount() {
+        const { logged_id } = this.props;
+        this.userIcon = env.url + '/auth/profile/image/get-by-user/' + logged_id;
         document.addEventListener('mousedown', this.onDocClick);
     }
 
@@ -68,7 +73,7 @@ class MainComponent extends React.Component {
                 <div className='top_bar_right'>
                     <div className='top_bar_left_button'><img alt='info' src={info} /></div>
                     <div className='top_bar_profile'>
-                        {logged?.substring(0, 1).toUpperCase()}
+                        <img src={this.userIcon} />
                     </div>
                     <div ref={this.buttonRef}>
                         <div className={isNavOpen ? 'top_bar_button clicked' : 'top_bar_button'} onClick={(e) => this.setState({ isNavOpen: !isNavOpen })}>
@@ -77,13 +82,12 @@ class MainComponent extends React.Component {
                         </div>
                         {isNavOpen ?
                             <React.Fragment>
-
                                 <div className='top_bar_group_nav'>
                                     <div className='top_bar_profile_container'>
-                                        <div className='sm_profile_badge'><img src={env.url + '/auth/profile/image/get-by-user/' + logged_id} /></div>
+                                        <div className='sm_profile_badge'><img src={this.userIcon} /></div>
                                     </div>
                                     <div className='top_bar_nav'>About me</div>
-                                    <div className='top_bar_nav' onClick={(e) => this.onLogOut()}>Log out</div>
+                                    <div className='top_bar_nav danger' onClick={(e) => this.onLogOut()}>Log out</div>
                                 </div>
                             </React.Fragment>
                             : null}

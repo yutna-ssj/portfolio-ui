@@ -7,3 +7,7 @@ export const checkLeftYear = (year) => {
     }
     return ret;
 }
+
+export const parseDateStringToArray = (date) => {
+    return date.split(/[-: ]/g);
+}

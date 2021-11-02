@@ -4,6 +4,7 @@ import { TabButton, TabButtonGroup } from '../../share-component/tab-button-comp
 import CalendarDashBoard from './children/calendar-dashboard-component';
 import CalendarPlanner from './children/calendar-planner-component';
 import { checkLeftYear } from '../../share-service/share-service';
+import './calendar-style.scss';
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

@@ -1,7 +1,7 @@
 import React from 'react';
 import ContentBox from '../../../share-component/content-box-component';
 import arrow from '../../../../assets/arrow.svg';
-import { checkLeftYear } from '../../../share-service/share-service';
+import { checkLeftYear, parseDateStringToArray } from '../../../share-service/share-service';
 import { http, HTTP_METHOD } from '../../../share-service/http-service';
 import { env } from '../../../../env';
 
@@ -74,14 +74,17 @@ export default class CalendarDashBoard extends React.Component {
 
         for (let i = 0; i < planners.length; i++) {
             const plan = planners[i];
-            const startDate = new Date(plan.startDate[0], plan.startDate[1] - 1, plan.startDate[2]);
-            const endDate = new Date(plan.endDate[0], plan.endDate[1] - 1, plan.endDate[2]);
+
+            const tempStartDate = parseDateStringToArray(plan.startDate);
+            const tempEndDate = parseDateStringToArray(plan.endDate);
+
+            const startDate = new Date(tempStartDate[0], tempStartDate[1] - 1, tempStartDate[2]);
+            const endDate = new Date(tempEndDate[0], tempEndDate[1] - 1, tempEndDate[2]);
 
             if (date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime()) {
                 isPlannerPoint = true;
                 break;
             }
-
         }
 
         return (
@@ -157,8 +160,10 @@ export default class CalendarDashBoard extends React.Component {
                                 <label>Today, {monthsOfYear[today[1]].substr(0, 3)} {today[0]}</label>
                                 {planners.map((item, index) => {
                                     const { startDate, endDate, plannerType } = item;
-                                    const start_dt = new Date(startDate[0], startDate[1] - 1, startDate[2]);
-                                    const end_dt = new Date(endDate[0], endDate[1] - 1, endDate[2]);
+                                    const temp_start_dt = parseDateStringToArray(startDate);
+                                    const temp_end_dt = parseDateStringToArray(endDate);
+                                    const start_dt = new Date(temp_start_dt[0], temp_start_dt[1] - 1, temp_start_dt[2]);
+                                    const end_dt = new Date(temp_end_dt[0], temp_end_dt[1] - 1, temp_end_dt[2]);
                                     const date = new Date(today[2], today[1], today[0]);
                                     return date.getTime() >= start_dt.getTime() && date.getTime() <= end_dt.getTime() ?
                                         <div className='today_planner_item' key={index} >
@@ -167,7 +172,7 @@ export default class CalendarDashBoard extends React.Component {
                                             </div>
                                             <div className='right' style={{ backgroundColor: '#' + plannerType.typeColor + '2a' }}>
                                                 <div className='name'>{item.taskName} ({plannerType.typeName})</div>
-                                                <div className='period_time'>{monthsOfYear[item.startDate[1] - 1].substr(0, 3)} {item.startDate[2]}, {item.startDate[0]} - {monthsOfYear[item.endDate[1] - 1].substr(0, 3)} {item.endDate[2]}, {item.endDate[0]}</div>
+                                                <div className='period_time'>{monthsOfYear[temp_start_dt[1] - 1].substr(0, 3)} {temp_start_dt[2]}, {temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3)} {temp_end_dt[2]}, {temp_end_dt[0]}</div>
                                                 <div className='owner'>{item.user.username}</div>
                                             </div>
                                         </div> : null;
@@ -247,8 +252,10 @@ const WeekPinOfCalendar = (props) => {
             <div className='list_planner_container'>
                 {planners.map((item, i) => {
                     const { startDate, endDate, plannerType } = item;
-                    const start_dt = new Date(startDate[0], startDate[1] - 1, startDate[2]);
-                    const end_dt = new Date(endDate[0], endDate[1] - 1, endDate[2]);
+                    const temp_start_dt = parseDateStringToArray(startDate);
+                    const temp_end_dt = parseDateStringToArray(endDate);
+                    const start_dt = new Date(temp_start_dt[0], temp_start_dt[1] - 1, temp_start_dt[2]);
+                    const end_dt = new Date(temp_end_dt[0], temp_end_dt[1] - 1, temp_end_dt[2]);
                     const item_date = new Date(itemDate.year, itemDate.month - 1, itemDate.date);
                     let className = 'item_planner';
                     if (i % 3 === 0) {
@@ -266,7 +273,7 @@ const WeekPinOfCalendar = (props) => {
                                     <img src={assignIcon} />
                                     <div className='line' style={{ backgroundColor: '#' + plannerType.typeColor + '8e' }} />
                                     <div className='planner_desc_container'>
-                                        <label className='planner_taskname'>{item.taskName} <label className='planner_period'>({monthsOfYear[startDate[1] - 1].substr(0, 3)} {startDate[2]}, {startDate[0]} - {monthsOfYear[endDate[1] - 1].substr(0, 3)} {endDate[2]}, {endDate[0]})</label></label>
+                                        <label className='planner_taskname'>{item.taskName} <label className='planner_period'>({monthsOfYear[temp_start_dt[1] - 1].substr(0, 3)} {temp_start_dt[2]}, {temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3)} {temp_end_dt[2]}, {temp_end_dt[0]})</label></label>
                                         <label className='planner_owner'>{item.user.username}</label>
                                     </div>
                                 </div>
@@ -286,8 +293,10 @@ const EventPlanner = (props) => {
     let start = -1;
     let end = 0;
 
-    const start_dt = new Date(startDate[0], startDate[1] - 1, startDate[2]);
-    const end_dt = new Date(endDate[0], endDate[1] - 1, endDate[2]);
+    const temp_start_dt = parseDateStringToArray(startDate);
+    const temp_end_dt = parseDateStringToArray(endDate);
+    const start_dt = new Date(temp_start_dt[0], temp_start_dt[1] - 1, temp_start_dt[2]);
+    const end_dt = new Date(temp_end_dt[0], temp_end_dt[1] - 1, temp_end_dt[2]);
 
     let isStartDate = false;
     let isEndDate = false;
@@ -340,7 +349,7 @@ const EventPlanner = (props) => {
                 <img src={assignIcon} />
                 <div className='line' style={{ backgroundColor: '#' + plannerType.typeColor + '8e' }} />
                 <div className='planner_desc_container'>
-                    <label className='planner_taskname'>{taskName} <label className='planner_period'>({monthsOfYear[startDate[1] - 1].substr(0, 3) + ' ' + startDate[2] + ', ' + startDate[0]} - {monthsOfYear[endDate[1] - 1].substr(0, 3) + ' ' + endDate[2] + ', ' + endDate[0]})</label> </label>
+                    <label className='planner_taskname'>{taskName} <label className='planner_period'>({monthsOfYear[temp_start_dt[1] - 1].substr(0, 3) + ' ' + temp_start_dt[2] + ', ' + temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3) + ' ' + temp_end_dt[2] + ', ' + temp_end_dt[0]})</label> </label>
                     <label className='planner_owner'>{user.username}</label>
                 </div>
             </div> : null}

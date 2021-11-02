@@ -7,15 +7,27 @@ import { checkLeftYear } from '../share-service/share-service';
 import MessageComponent, { MESSAGE_TYPE } from './message-component';
 
 export const TextInput = (props) => {
-    const { label, disabled, value, onChange, placeholder } = props;
+    const { label, disabled, value, onChange, placeholder, maxLength } = props;
     return (<div className={disabled ? 'input_container disabled' : 'input_container'}>
         <div className='input_group'>
             <label>{label}</label>
-            <input disabled={disabled} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+            <input disabled={disabled} maxLength={maxLength} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
             <span className="underline" />
         </div>
     </div>)
 }
+
+export const TextAreaInput = (props) => {
+    const { label, disabled, value, onChange, placeholder, maxLength } = props;
+    return (<div className={disabled ? 'input_container disabled' : 'input_container'}>
+        <div className='input_group'>
+            <label>{label}</label>
+            <textarea rows={1} disabled={disabled} maxLength={maxLength} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+            <span className="underline" />
+        </div>
+    </div>)
+}
+
 
 
 export class SelectInput extends React.Component {
@@ -95,7 +107,7 @@ export class SelectInput extends React.Component {
                 <div className='select_container'>
                     <div ref={this.buttonRef}>
                         <div className={isOpen ? 'select clicked' : 'select'} onClick={() => this.setState({ isOpen: !isOpen })}>
-                            <div>{value_label}</div>
+                            <div className={value ? '' : 'placeholder-custom'}>{value_label}</div>
                             <img alt='arrow' src={arrow} />
                         </div>
                         {isOpen ? <div className='option_group'>

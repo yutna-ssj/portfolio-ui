@@ -41,7 +41,7 @@ export default MessageComponent;
 
 const DangerMessage = (props) => {
     const { main, sub, onClose } = props;
-    return (<div className='message_container card'>
+    return (<div className='message_container'>
         <img src={warning} />
         <div className='message'>
             <div className='main'>{main}</div>

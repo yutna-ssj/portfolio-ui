@@ -1,5 +1,5 @@
 import React from 'react';
-import menu from '../../assets/menu.svg';
+import menu from '../../assets/meatball.png';
 
 export class TabButton extends React.Component {
 

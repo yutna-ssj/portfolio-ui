@@ -1,11 +1,12 @@
 import React from "react";
 import ContentBox from "../../../share-component/content-box-component";
 import arrow from '../../../../assets/arrow.svg';
-import { DurationInput, SelectInput, TextInput } from "../../../share-component/input-component";
+import { DurationInput, SelectInput, TextAreaInput, TextInput } from "../../../share-component/input-component";
 import MessageComponent, { MESSAGE_TYPE } from "../../../share-component/message-component";
 import { http, HTTP_METHOD } from "../../../share-service/http-service";
 import { env } from "../../../../env";
 import banner from "../../../../assets/planner-banner.svg";
+import { parseDateStringToArray } from "../../../share-service/share-service";
 
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -19,7 +20,7 @@ export default class CalendarPlanner extends React.Component {
         const today = new Date();
         this.state = {
             isNewCreate: false,
-            createForm: { name: '', assignTo: '', type: '', fromDate: [today.getFullYear(), today.getMonth() + 1, today.getDate()], toDate: [today.getFullYear(), today.getMonth() + 1, today.getDate()] },
+            createForm: { name: '', assignTo: '', type: '', fromDate: [today.getFullYear(), today.getMonth() + 1, today.getDate()], toDate: [today.getFullYear(), today.getMonth() + 1, today.getDate()], remark: '' },
             subUserOptions: [],
             plannerTypeOptions: [],
             plannerEvents: []
@@ -27,15 +28,11 @@ export default class CalendarPlanner extends React.Component {
     }
 
     componentDidMount() {
+        const { calendar, getCalendar } = this.props;
+        console.log('calendar', calendar);
         document.addEventListener('mousedown', this.onDocClick);
         this.getSubUsers();
         this.getPlannerTypes();
-
-        http(HTTP_METHOD.GET, env.url + '/api/calendar/planner/get-by-user').then((res) => {
-            this.setState({ plannerEvents: res });
-        }).catch((err) => {
-
-        });
     }
 
     getSubUsers = () => {
@@ -54,10 +51,39 @@ export default class CalendarPlanner extends React.Component {
         });
     }
 
+    getPlannerEvents = () => {
+        const { calendar } = this.props;
+        if (calendar.datesOfCalendar.length > 0) {
+            const fromDate = [calendar.datesOfCalendar[0][0].year, calendar.datesOfCalendar[0][0].month, calendar.datesOfCalendar[0][0].date];
+            const toDate = [calendar.datesOfCalendar[5][6].year, calendar.datesOfCalendar[5][6].month, calendar.datesOfCalendar[5][6].date];
+            http(HTTP_METHOD.POST, env.url + '/api/calendar/planner/get-by-user', { fromDate: fromDate, toDate: toDate }).then((res) => {
+                this.setState({ plannerEvents: res });
+            }).catch((err) => {
+
+            });
+        }
+    }
+
     componentWillUnmount() {
         document.removeEventListener('mousedown', this.onDocClick);
     }
 
+    //#region c
+
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        const { calendar: prevCalendar } = prevProps;
+        const { calendar: nextCalendar } = this.props;
+        if (prevCalendar.year !== nextCalendar.year || prevCalendar.month !== nextCalendar.month || prevCalendar.datesOfCalendar.length !== nextCalendar.datesOfCalendar.length)
+            return true;
+        return false;
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (snapshot) {
+            console.log('update');
+            this.getPlannerEvents()
+        }
+    }
     onMouseLeave = () => {
         this.isMouseLeaveOnDropdown = true;
     }
@@ -111,9 +137,21 @@ export default class CalendarPlanner extends React.Component {
         onStateChange('week', week);
     }
 
+
+
+
+    //#endregion
+
+    testDate = () => {
+        http(HTTP_METHOD.POST, env.url + '/api/calendar/planner/add', { fromDate: '2021-01-01 12:22:01', toDate: [2021, 10, 1, 23, 0, 15] }).then((res) => {
+
+        }).catch((err) => {
+
+        });
+    }
+
     render() {
         const { show, calendar, today } = this.props;
-
         const { isNewCreate, createForm, subUserOptions, plannerTypeOptions, plannerEvents } = this.state;
         const weeks = [];
         if (calendar.week % 2 === 0) {
@@ -173,62 +211,38 @@ export default class CalendarPlanner extends React.Component {
                                         <div className='container' style={{ marginTop: '20px' }}>
                                             <label className='planner_form_add_label'>Create new assignment</label>
                                             <div className='row'>
-                                                <div className='col-sm-12' >
-                                                    <TextInput label='Name' value={createForm.name} placeholder='Name' onChange={(e) => this.setState({ createForm: { ...createForm, name: e } })} />
+                                                <div className='col-sm-8' >
+                                                    <TextInput label='Name' value={createForm.name} maxLength={50} placeholder='Name 50 characters' onChange={(e) => this.setState({ createForm: { ...createForm, name: e } })} />
                                                 </div>
-                                                <div className='col-sm-6'>
+                                                <div className='col-sm-4'>
                                                     <SelectInput label='Assign to' value={createForm.assignTo} onChange={(e) => this.setState({ createForm: { ...createForm, assignTo: e } })} >
                                                         <option value='' disabled>Select user</option>
                                                         <option value='0'>Me</option>
                                                         {subUserOptions.map((option, index) => <option key={index} value={option.userID.toString()}>{option.username}</option>)}
                                                     </SelectInput>
                                                 </div>
-                                                <div className='col-sm-6'>
+                                                <div className='col-sm-4'>
                                                     <SelectInput label='Type' value={createForm.type} onChange={(e) => this.setState({ createForm: { ...createForm, type: e } })} >
                                                         <option value='' disabled>Select type</option>
                                                         {plannerTypeOptions.map((option, index) => <option key={index} value={option.plannerTypeID.toString()}>{option.typeName}</option>)}
                                                     </SelectInput>
                                                 </div>
-                                                <div className='col-sm-12' >
+                                                <div className='col-sm-8' >
                                                     <DurationInput label='Date duration' fromDateValue={createForm.fromDate} toDateValue={createForm.toDate} onChange={(fromDate, toDate) => { this.setState({ createForm: { ...createForm, fromDate: fromDate, toDate: toDate } }) }} />
                                                 </div>
-                                                {/* <div className='col-sm-12'>
-                                            <MessageComponent type={MESSAGE_TYPE.SUCCESS} />
-                                        </div> */}
+                                                <div className='col-sm-12' >
+                                                    <TextAreaInput label='Remark' value={createForm.remark} maxLength={128} placeholder='Remark 128 characters' onChange={(e) => this.setState({ createForm: { ...createForm, remark: e } })} />
+                                                </div>
                                                 <button className='button border_bottom_radius' onClick={(e) => { }}>Save</button>
                                             </div>
                                         </div>
                                     </div> : null}
                                 </div>
-                                {/* <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                                    <label className ="form-check-label" for="flexCheckDefault">
-                                    Default checkbox
-                                    </label>
-                                </div>
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                    <label className ="form-check-label" for="flexCheckChecked">
-                                    Checked checkbox
-                                    </label>
-                                </div> */}
+
                             </div>
                         </div>
                     </div>
-                    {/* <button className='planner_create_button' style={{ marginBottom: '10px' }}>New</button> */}
 
-
-
-                    {/* <div className='container card'>
-                        <div className='row'>
-                            <div className='col-sm-12'>
-                                <TextInput label='Name' />
-                            </div>
-                            <div className='col-sm-12'>
-                                <TextInput label='Start date' />
-                            </div>
-                        </div>
-                    </div> */}
                     <div className='planner_container'>
                         <div className='header_planner_calendar'>
                             <div>
@@ -347,8 +361,11 @@ const PlannerEvents = (props) => {
             let start = -1;
             let end = 0;
 
-            const start_dt = new Date(tempItemEvent.startDate[0], tempItemEvent.startDate[1] - 1, tempItemEvent.startDate[2]);
-            const end_dt = new Date(tempItemEvent.endDate[0], tempItemEvent.endDate[1] - 1, tempItemEvent.endDate[2]);
+            const temp_start_dt = parseDateStringToArray(tempItemEvent.startDate);
+            const temp_end_dt = parseDateStringToArray(tempItemEvent.endDate);
+
+            const start_dt = new Date(temp_start_dt[0], temp_start_dt[1] - 1, temp_start_dt[2]);
+            const end_dt = new Date(temp_end_dt[0], temp_end_dt[1] - 1, temp_end_dt[2]);
 
             for (let j = 0; j < weeks.length; j++) {
                 const item_date = new Date(weeks[j].year, weeks[j].month - 1, weeks[j].date);
@@ -366,7 +383,7 @@ const PlannerEvents = (props) => {
                     <div key={i} className='item_planner' style={{ marginLeft: (start * 100) + 150 + 'px', width: end * 100 + 'px' }}>
                         <div className='line' style={{ backgroundColor: '#' + tempItemEvent.plannerType.typeColor + '8e' }} />
                         <div className='planner_desc_container'>
-                            <label className='planner_taskname'>{tempItemEvent.taskName} <label className='planner_period'>({monthsOfYear[tempItemEvent.startDate[1] - 1].substr(0, 3)} {tempItemEvent.startDate[2]}, {tempItemEvent.startDate[0]} - {monthsOfYear[tempItemEvent.endDate[1] - 1].substr(0, 3)} {tempItemEvent.endDate[2]}, {tempItemEvent.endDate[0]})</label></label>
+                            <label className='planner_taskname'>{tempItemEvent.taskName} <label className='planner_period'>({monthsOfYear[temp_start_dt[1] - 1].substr(0, 3)} {temp_start_dt[2]}, {temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3)} {temp_end_dt[2]}, {temp_end_dt[0]})</label></label>
                             {/* <label className='planner_owner'>Assigned by Ice Ice</label> */}
                         </div>
                     </div>)
