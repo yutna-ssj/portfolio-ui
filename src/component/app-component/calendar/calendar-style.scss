@@ -13,7 +13,6 @@ $color_app_text: #797979;
 $color_disabled_text: #b8b8b8;
 $color_hover: #e9e9e9;
 
-
 @mixin prefix($property, $value, $prefixes) {
     @each $prefix in $prefixes {
         -#{$prefix}-#{$property}: $value;
@@ -165,6 +164,7 @@ $color_hover: #e9e9e9;
 
 .today_dashboard_container {
     height: auto;
+
     & label {
         color: $color_primary_darkblue;
         font-weight: 550;
@@ -174,8 +174,8 @@ $color_hover: #e9e9e9;
     & .today_planner_item {
         display: flex;
         margin-bottom: 10px;
-
-        & .left {
+        width: auto;
+        & .today_planner_item_left {
             position: relative;
             width: 10px;
             height: auto;
@@ -190,13 +190,14 @@ $color_hover: #e9e9e9;
             }
         }
 
-        & .right {
+        & .today_planner_item_right {
             display: flex;
             flex-flow: column wrap;
             background-color: #f7b2a962;
             padding: 5px 5px;
             border-top-right-radius: 20px;
             border-bottom-right-radius: 20px;
+            width: 100%;
             & .name {
                 color: $color_primary_text;
                 font-weight: 600;
@@ -767,6 +768,14 @@ $color_hover: #e9e9e9;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
         grid-template-areas: "left" "right";
+
+        // & .left {
+        //     width: 250px !important;
+
+        //     & .month_calendar_container .top_month_calendar label {
+        //         font-size: 15px;
+        //     }
+        // }
     }
 
     .week_calendar_overview_container {
@@ -791,6 +800,14 @@ $color_hover: #e9e9e9;
         grid-template-columns: 1fr 3fr;
         grid-template-rows: 1fr;
         grid-template-areas: "left right";
+
+        & .left {
+            width: 250px !important;
+            & .month_calendar_container .top_month_calendar label {
+                margin-top: 2px;
+                font-size: 15px;
+            }
+        }
     }
 }
 
@@ -801,6 +818,10 @@ $color_hover: #e9e9e9;
         grid-template-columns: 1fr 3fr;
         grid-template-rows: 1fr;
         grid-template-areas: "left right";
+
+        & .left {
+            width: auto !important;
+        }
     }
 }
 
@@ -830,7 +851,7 @@ $color_hover: #e9e9e9;
     position: absolute;
     height: auto;
     max-width: 100%;
-  
+
     background-color: white;
     @include prefix(box-shadow, 0px 1px 20px 2px $color_shadow !important, moz webkit);
     @include prefix(animation, scale-popup 0.3s, moz webkit);
@@ -867,6 +888,16 @@ $color_hover: #e9e9e9;
             background-color: $color_bg_blue;
             text-align: center;
             color: $color_app_text;
+
+            &.disabled {
+                color: $color_disabled_text;
+                background-color: #ebebeb;
+            }
+
+            &.today {
+                background-color: #cfdefdfd;
+                color: $color_primary_darkblue;
+            }
 
             &:nth-child(1) {
                 @include prefix(position, sticky, moz webkit);
@@ -919,6 +950,14 @@ $color_hover: #e9e9e9;
                     border-right: 1px solid $color_border;
                     z-index: 1;
                     background-color: white;
+                }
+
+                &.disabled {
+                    background-color: $color_primary_bg;
+                }
+
+                &.today {
+                    background-color: #c3d5fa4f;
                 }
 
                 &:nth-child(2) {

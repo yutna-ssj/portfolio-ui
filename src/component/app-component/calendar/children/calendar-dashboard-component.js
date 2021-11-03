@@ -18,17 +18,8 @@ export default class CalendarDashBoard extends React.Component {
         super(_props);
 
         this.state = {
-            planners: []
+            plannerEvents: []
         };
-    }
-
-    componentDidMount() {
-
-        http(HTTP_METHOD.GET, env.url + '/api/calendar/planner/dashboard/get-by-user').then((res) => {
-            this.setState({ planners: res });
-        }).catch((err) => {
-            console.log(err);
-        })
     }
 
     onPreviousMonthClick = () => {
@@ -62,9 +53,36 @@ export default class CalendarDashBoard extends React.Component {
         onStateChange('week', week);
     }
 
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        const { calendar: prevCalendar } = prevProps;
+        const { calendar: nextCalendar } = this.props;
+        if (prevCalendar.year !== nextCalendar.year || prevCalendar.month !== nextCalendar.month || prevCalendar.datesOfCalendar.length !== nextCalendar.datesOfCalendar.length)
+            return true;
+        return false;
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (snapshot) {
+            this.getPlannerEvents()
+        }
+    }
+
+    getPlannerEvents = () => {
+        const { calendar } = this.props;
+        if (calendar.datesOfCalendar.length > 0) {
+            const fromDate = [calendar.datesOfCalendar[0][0].year, calendar.datesOfCalendar[0][0].month, calendar.datesOfCalendar[0][0].date];
+            const toDate = [calendar.datesOfCalendar[5][6].year, calendar.datesOfCalendar[5][6].month, calendar.datesOfCalendar[5][6].date];
+            http(HTTP_METHOD.POST, env.url + '/api/calendar/planner/dashboard/get-by-user', { fromDate: fromDate, toDate: toDate }).then((res) => {
+                this.setState({ plannerEvents: res });
+            }).catch((err) => {
+
+            });
+        }
+    }
+
     pointEventOnCalendar = (itemDate) => {
         const { disabled } = itemDate;
-        const { planners } = this.state;
+        const { plannerEvents } = this.state;
 
         if (disabled)
             return null;
@@ -72,8 +90,8 @@ export default class CalendarDashBoard extends React.Component {
         let isPlannerPoint = false;
         const date = new Date(itemDate.year, itemDate.month - 1, itemDate.date);
 
-        for (let i = 0; i < planners.length; i++) {
-            const plan = planners[i];
+        for (let i = 0; i < plannerEvents.length; i++) {
+            const plan = plannerEvents[i];
 
             const tempStartDate = parseDateStringToArray(plan.startDate);
             const tempEndDate = parseDateStringToArray(plan.endDate);
@@ -97,7 +115,7 @@ export default class CalendarDashBoard extends React.Component {
     render() {
 
         const { show, calendar, today } = this.props;
-        const { planners } = this.state;
+        const { plannerEvents } = this.state;
         return (<React.Fragment>
             {show ? <React.Fragment>
                 <ContentBox id='1' title='Meetings Overview'>
@@ -158,7 +176,7 @@ export default class CalendarDashBoard extends React.Component {
                             </div>
                             <div className='card today_dashboard_container container'>
                                 <label>Today, {monthsOfYear[today[1]].substr(0, 3)} {today[0]}</label>
-                                {planners.map((item, index) => {
+                                {plannerEvents.map((item, index) => {
                                     const { startDate, endDate, plannerType } = item;
                                     const temp_start_dt = parseDateStringToArray(startDate);
                                     const temp_end_dt = parseDateStringToArray(endDate);
@@ -167,10 +185,10 @@ export default class CalendarDashBoard extends React.Component {
                                     const date = new Date(today[2], today[1], today[0]);
                                     return date.getTime() >= start_dt.getTime() && date.getTime() <= end_dt.getTime() ?
                                         <div className='today_planner_item' key={index} >
-                                            <div className='left'>
+                                            <div className='today_planner_item_left'>
                                                 <div className='tab_color' style={{ backgroundColor: '#' + plannerType.typeColor }} />
                                             </div>
-                                            <div className='right' style={{ backgroundColor: '#' + plannerType.typeColor + '2a' }}>
+                                            <div className='today_planner_item_right' style={{ backgroundColor: '#' + plannerType.typeColor + '2a' }}>
                                                 <div className='name'>{item.taskName} ({plannerType.typeName})</div>
                                                 <div className='period_time'>{monthsOfYear[temp_start_dt[1] - 1].substr(0, 3)} {temp_start_dt[2]}, {temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3)} {temp_end_dt[2]}, {temp_end_dt[0]}</div>
                                                 <div className='owner'>{item.user.username}</div>
@@ -210,14 +228,14 @@ export default class CalendarDashBoard extends React.Component {
                                             ) : null}
                                         </div>
                                         <div className='list_planner_container'>
-                                            {planners.map((item, index) =>
-                                                <EventPlanner key={index} planner={item} week={calendar.datesOfCalendar[calendar.week]} index={index} maxLength={planners.length} />
+                                            {plannerEvents.map((item, index) =>
+                                                <EventPlanner key={index} planner={item} week={calendar.datesOfCalendar[calendar.week]} index={index} maxLength={plannerEvents.length} />
                                             )}
                                         </div>
                                     </div>
                                 </div>
                                 <div className='week_pin_calendar'>
-                                    {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item, index) => <WeekPinOfCalendar key={index} planners={planners} itemDate={item} index={index} today={today} />) : null}
+                                    {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item, index) => <WeekPinOfCalendar key={index} planners={plannerEvents} itemDate={item} index={index} today={today} />) : null}
                                 </div>
                             </div>
                         </div>

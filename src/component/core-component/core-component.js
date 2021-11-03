@@ -12,6 +12,21 @@ class CoreComponent extends React.Component {
         this.state = { isCollapse: true };
     }
 
+    componentDidMount() {
+        window.addEventListener('resize', this.handleWindowResize, false);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleWindowResize, false);
+    }
+
+    handleWindowResize = () => {
+        let vh = window.innerHeight * 0.01;
+        document.getElementsByClassName('top_bar_container')[0].style.top = '0px';
+        document.getElementsByClassName('left_component')[0].style.top = '0px';
+        document.getElementsByClassName('left_component')[0].style.height = 'calc( ' + vh * 100 + ')';;
+    }
+
     onRouteChanged = (route) => {
         this.props.history.push({ pathname: '/' + route.toLowerCase(), state: { isCollapse: this.state.isCollapse } });
     }

@@ -90,6 +90,7 @@ class CalendarComponent extends React.Component {
                     <CalendarPlanner show={tabSelected === 1} calendar={plannerCalendar} today={today}
                         onStateChange={(key, value) => this.onPlannerCalendarChange(key, value)} getCalendar={(year, month, week) => this.setState({ plannerCalendar: this.getCalendar(year, month, week) })} />
                 </div >
+                <div className='safety_bottom'></div>
             </div>
         );
     }

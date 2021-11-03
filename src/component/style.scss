@@ -110,9 +110,12 @@ $color_loading: #bdbdbd3f;
     display: grid;
     grid-template-columns: auto minmax(calc(100% - 200px), calc(100% - 50px));
     grid-template-rows: auto;
-    grid-template-areas: "left content";
-    height: 100vh;
+    grid-template-areas:
+        "left top"
+        "left content";
     overflow: hidden;
+    overflow-y: auto !important;
+    background-color: $color_primary_bg;
 }
 
 .left_component {
@@ -120,12 +123,13 @@ $color_loading: #bdbdbd3f;
     grid-area: left;
     width: 200px;
     background-color: $color_white;
-    z-index: 3;
-    position: relative;
+    z-index: 6;
+    @include prefix(position, sticky, webkit moz ms o);
+    top: 0px;
     overflow-x: hidden;
     transition: 0.3s;
     border-right: 1px solid $color_border;
-
+    height: calc(var(--vh, 1vh) * 100);
     &._collapse {
         grid-area: left;
         width: 50px;
@@ -303,14 +307,22 @@ $color_loading: #bdbdbd3f;
     width: auto;
     grid-area: content;
     position: relative;
-    background-color: $color_primary_bg;
+    height: inherit;
+}
+
+.safety_bottom {
+    position: relative;
+    height: 60px !important;
 }
 
 .top_bar_container {
-    height: 45px;
+    grid-area: top;
+    height: 55px;
     background-color: $color_white;
     width: 100%;
-    position: relative;
+    @include prefix(position, sticky, webkit moz ms o);
+    top: 0px;
+    z-index: 5;
     display: inline-grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
@@ -387,8 +399,8 @@ $color_loading: #bdbdbd3f;
 
 .top_bar_profile {
     background-color: $color_border;
-    min-width: 35px;
-    min-height: 35px;
+    min-width: 40px;
+    min-height: 40px;
     border-radius: 25px;
     margin-left: 5px;
     display: flex;
@@ -398,14 +410,14 @@ $color_loading: #bdbdbd3f;
     color: $color_white;
     overflow: hidden;
     & img {
-        height: 35px;
-        width: 35px;
+        height: 40px;
+        width: 40px;
     }
 }
 
 .top_bar_button {
     margin: 0px 5px;
-    height: 30px;
+    height: 40px;
     padding: 0px 10px;
     border-radius: 10px;
     display: flex;
@@ -455,12 +467,11 @@ $color_loading: #bdbdbd3f;
     width: 200px;
     background-color: $color_white;
     border-radius: 10px;
-    top: 45px;
+    top: 55px;
     right: 5px;
     box-shadow: 0px 2px 5px 3px $color_shadow;
     @include prefix(animation, scale-popup 0.3s, moz webkit);
     overflow: hidden;
-    z-index: 1;
 }
 
 @keyframes scale-popup {
@@ -492,13 +503,13 @@ $color_loading: #bdbdbd3f;
 // APP CONTAINER //
 
 .app {
-    overflow-y: auto !important;
     width: 100%;
-    height: calc(100vh - 45px);
+    // height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
 }
+
 .app_container {
-    padding-top: 15px;
-    padding-bottom: 40px;
+    padding-top: 20px;
     position: relative;
     & .app_name {
         color: $color_app_text;
@@ -811,10 +822,9 @@ $color_loading: #bdbdbd3f;
 
     .left_component {
         width: 100%;
-        position: absolute;
-        height: 100%;
+        @include prefix(position, absolute, webkit moz ms o);
         padding-left: 0px !important;
-
+        height: 100vh;
         &._collapse {
             grid-area: left;
             width: 0px;

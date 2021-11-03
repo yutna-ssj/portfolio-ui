@@ -64,7 +64,7 @@ class MainComponent extends React.Component {
     render() {
         const { isNavOpen } = this.state;
         const { onCollapse, logged, logged_id } = this.props;
-        return (<div className='main_component'>
+        return (<React.Fragment>
             <div className='top_bar_container'>
                 <div className='top_bar_left'>
                     <div className='top_bar_collaspe_button' onClick={(e) => onCollapse()} ><img alt='slide' src={slide} /></div>
@@ -94,8 +94,11 @@ class MainComponent extends React.Component {
                     </div>
                 </div>
             </div>
-            <AppRouter />
-        </div >);
+            <div className='main_component'>
+                <AppRouter />
+            </div>
+        </React.Fragment>
+        );
     }
 }
 

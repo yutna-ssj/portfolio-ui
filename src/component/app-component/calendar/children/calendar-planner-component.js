@@ -28,8 +28,6 @@ export default class CalendarPlanner extends React.Component {
     }
 
     componentDidMount() {
-        const { calendar, getCalendar } = this.props;
-        console.log('calendar', calendar);
         document.addEventListener('mousedown', this.onDocClick);
         this.getSubUsers();
         this.getPlannerTypes();
@@ -84,6 +82,7 @@ export default class CalendarPlanner extends React.Component {
             this.getPlannerEvents()
         }
     }
+
     onMouseLeave = () => {
         this.isMouseLeaveOnDropdown = true;
     }
@@ -142,13 +141,40 @@ export default class CalendarPlanner extends React.Component {
 
     //#endregion
 
-    testDate = () => {
-        http(HTTP_METHOD.POST, env.url + '/api/calendar/planner/add', { fromDate: '2021-01-01 12:22:01', toDate: [2021, 10, 1, 23, 0, 15] }).then((res) => {
+    pointEventOnCalendar = (itemDate) => {
+        const { disabled } = itemDate;
+        const { plannerEvents } = this.state;
+        const ret = [];
+        if (disabled)
+            return null;
 
-        }).catch((err) => {
+        const date = new Date(itemDate.year, itemDate.month - 1, itemDate.date);
 
-        });
+        for (let i = 0; i < plannerEvents.length; i++) {
+            const plan = plannerEvents[i];
+
+            const tempStartDate = parseDateStringToArray(plan.startDate);
+            const tempEndDate = parseDateStringToArray(plan.endDate);
+
+            const startDate = new Date(tempStartDate[0], tempStartDate[1] - 1, tempStartDate[2]);
+            const endDate = new Date(tempEndDate[0], tempEndDate[1] - 1, tempEndDate[2]);
+
+            if (date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime()) {
+                if (ret.length < 3) {
+                    ret.push(<div key={i} className='planner_point' style={{ backgroundColor: '#' + plan.plannerType.typeColor }} />);
+                }
+            }
+        }
+
+        return (
+            <React.Fragment>
+                <div className='point_container'>
+                    {ret}
+                </div>
+            </React.Fragment>
+        );
     }
+
 
     render() {
         const { show, calendar, today } = this.props;
@@ -179,10 +205,13 @@ export default class CalendarPlanner extends React.Component {
                                     {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
                                 </div>
                                 <div className='body_month_calendar'>
-                                    {calendar.datesOfCalendar.map((week, index) => week.map((item) =>
-                                        <div key={index + week.indexOf(item)} className={weeks.includes(index) ? 'current_week' : ''}>
-                                            <div className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}>{item.date}</div>
-                                        </div>))}
+                                    {calendar.datesOfCalendar.map((week, iw) => week.map((item) =>
+                                        <div key={iw + item.date} className={weeks.includes(iw) ? 'current_week' : ''}>
+                                            <div className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}><label>{item.date}</label>
+                                                {this.pointEventOnCalendar(item)}
+                                            </div>
+                                        </div>))
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -193,15 +222,6 @@ export default class CalendarPlanner extends React.Component {
                                     <div className='header'>WELCOME TO CALENDAR PLANNER</div>
                                     <div className='content'>This is app for making plan. The users can see their tasks and subordinates tasks,
                                         they can make some assignment to others depend on their role and manage their tasks was assigned.</div>
-                                </div>
-                            </div>
-                            <div className='week_calendar_overview_container'>
-                                <div className='top_week_calendar'>
-                                    <div className='button_container'>
-                                        <button onClick={(e) => this.onPreviousWeekClick()}><img src={arrow} /></button>
-                                        <button onClick={(e) => this.onNextWeekClick()}><img src={arrow} /></button>
-                                    </div>
-                                    <label>{monthsOfYear[calendar.datesOfCalendar[weeks[0]][0].month - 1]} {calendar.datesOfCalendar[weeks[0]][0].date}, {calendar.datesOfCalendar[weeks[0]][0].year} - {monthsOfYear[calendar.datesOfCalendar[weeks[1]][6].month - 1]} {calendar.datesOfCalendar[weeks[1]][6].date}, {calendar.datesOfCalendar[weeks[1]][6].year}</label>
                                 </div>
                             </div>
                             <div className='planner_button_container'>
@@ -238,7 +258,15 @@ export default class CalendarPlanner extends React.Component {
                                         </div>
                                     </div> : null}
                                 </div>
-
+                            </div>
+                            <div className='week_calendar_overview_container'>
+                                <div className='top_week_calendar'>
+                                    <div className='button_container'>
+                                        <button onClick={(e) => this.onPreviousWeekClick()}><img src={arrow} /></button>
+                                        <button onClick={(e) => this.onNextWeekClick()}><img src={arrow} /></button>
+                                    </div>
+                                    <label>{monthsOfYear[calendar.datesOfCalendar[weeks[0]][0].month - 1]} {calendar.datesOfCalendar[weeks[0]][0].date}, {calendar.datesOfCalendar[weeks[0]][0].year} - {monthsOfYear[calendar.datesOfCalendar[weeks[1]][6].month - 1]} {calendar.datesOfCalendar[weeks[1]][6].date}, {calendar.datesOfCalendar[weeks[1]][6].year}</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -249,13 +277,13 @@ export default class CalendarPlanner extends React.Component {
                                 <label>Owner</label>
                             </div>
                             {calendar.datesOfCalendar[weeks[0]].map((item, index) =>
-                                <div key={index}>
+                                <div key={index} className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}>
                                     <label>{monthsOfYear[item.month - 1].substr(0, 3)}</label>
                                     <label>{item.date}</label>
                                 </div>
                             )}
                             {calendar.datesOfCalendar[weeks[1]].map((item, index) =>
-                                <div key={index}>
+                                <div key={index} className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}>
                                     <label>{monthsOfYear[item.month - 1].substr(0, 3)}</label>
                                     <label>{item.date}</label>
                                 </div>
@@ -273,11 +301,11 @@ export default class CalendarPlanner extends React.Component {
                                     {/* <label>Ice Ice</label> */}
                                 </div>
                                 {calendar.datesOfCalendar[weeks[0]].map((item, index) =>
-                                    <div key={index}>
+                                    <div key={index} className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}>
                                     </div>
                                 )}
                                 {calendar.datesOfCalendar[weeks[1]].map((item, index) =>
-                                    <div key={index}>
+                                    <div key={index} className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}>
                                     </div>
                                 )}
                             </div>
