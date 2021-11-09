@@ -118,129 +118,131 @@ export default class CalendarDashBoard extends React.Component {
         const { plannerEvents } = this.state;
         return (<React.Fragment>
             {show ? <React.Fragment>
-                <ContentBox id='1' title='Meetings Overview'>
-                    <div className='row'>
-                        <div className='col-lg-3'>
-                            <div className="card">
-                                <div className="card-body">
-                                    This is some text within a card body.
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-lg-3'>
-                            <div className="card">
-                                <div className="card-body">
-                                    This is some text within a card body.
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-lg-3'>
-                            <div className="card">
-                                <div className="card-body">
-                                    This is some text within a card body.
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-lg-3'>
-                            <div className="card">
-                                <div className="card-body">
-                                    This is some text within a card body.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ContentBox>
-                <ContentBox id='2' title='Calendar Overview'>
-                    <div className='calendar_container'>
-                        <div className='left'>
-                            <div className='card container month_calendar_container'>
-                                <div className='top_month_calendar'>
-                                    <label key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()}>{monthsOfYear[calendar.month]} {calendar.year}</label>
-                                    <div className='button_container'>
-                                        <button onClick={(e) => this.onPreviousMonthClick()}><img src={arrow} /></button>
-                                        <button onClick={(e) => this.onNextMonthClick()}><img src={arrow} /></button>
+                <div className='app_container container'>
+                    <ContentBox id='1' title='Dashboard Overview'>
+                        <div className='row'>
+                            <div className='col-md-3'>
+                                <div className="card">
+                                    <div className="card-body">
+                                        This is some text within a card body.
                                     </div>
                                 </div>
-                                <div className='header_month_calendar'>
-                                    {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
-                                </div>
-                                <div className='body_month_calendar'>
-                                    {calendar.datesOfCalendar.map((week, iw) => week.map((item) =>
-                                        <div key={iw + item.date} className={iw === calendar.week ? 'current_week' : ''}>
-                                            <div className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}><label>{item.date}</label>
-                                                {this.pointEventOnCalendar(item)}
-                                            </div>
-                                        </div>))
-                                    }
+                            </div>
+                            <div className='col-md-3'>
+                                <div className="card">
+                                    <div className="card-body">
+                                        This is some text within a card body.
+                                    </div>
                                 </div>
                             </div>
-                            <div className='card today_dashboard_container container'>
-                                <label>Today, {monthsOfYear[today[1]].substr(0, 3)} {today[0]}</label>
-                                {plannerEvents.map((item, index) => {
-                                    const { startDate, endDate, plannerType } = item;
-                                    const temp_start_dt = parseDateStringToArray(startDate);
-                                    const temp_end_dt = parseDateStringToArray(endDate);
-                                    const start_dt = new Date(temp_start_dt[0], temp_start_dt[1] - 1, temp_start_dt[2]);
-                                    const end_dt = new Date(temp_end_dt[0], temp_end_dt[1] - 1, temp_end_dt[2]);
-                                    const date = new Date(today[2], today[1], today[0]);
-                                    return date.getTime() >= start_dt.getTime() && date.getTime() <= end_dt.getTime() ?
-                                        <div className='today_planner_item' key={index} >
-                                            <div className='today_planner_item_left'>
-                                                <div className='tab_color' style={{ backgroundColor: '#' + plannerType.typeColor }} />
-                                            </div>
-                                            <div className='today_planner_item_right' style={{ backgroundColor: '#' + plannerType.typeColor + '2a' }}>
-                                                <div className='name'>{item.taskName} ({plannerType.typeName})</div>
-                                                <div className='period_time'>{monthsOfYear[temp_start_dt[1] - 1].substr(0, 3)} {temp_start_dt[2]}, {temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3)} {temp_end_dt[2]}, {temp_end_dt[0]}</div>
-                                                <div className='owner'>{item.user.username}</div>
-                                            </div>
-                                        </div> : null;
-                                }
-                                )}
+                            <div className='col-md-3'>
+                                <div className="card">
+                                    <div className="card-body">
+                                        This is some text within a card body.
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='col-md-3'>
+                                <div className="card">
+                                    <div className="card-body">
+                                        This is some text within a card body.
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className='right'>
-                            <div className='week_calendar_overview_container'>
-                                <div className='top_week_calendar'>
-                                    <div className='button_container'>
-                                        <button onClick={(e) => this.onPreviousWeekClick()}><img src={arrow} /></button>
-                                        <button onClick={(e) => this.onNextWeekClick()}><img src={arrow} /></button>
+                    </ContentBox>
+                    <ContentBox id='2' title='Your Calendar Overview'>
+                        <div className='calendar_container'>
+                            <div className='left'>
+                                <div className='card container month_calendar_container'>
+                                    <div className='top_month_calendar'>
+                                        <label key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()}>{monthsOfYear[calendar.month]} {calendar.year}</label>
+                                        <div className='button_container'>
+                                            <button onClick={(e) => this.onPreviousMonthClick()}><img src={arrow} /></button>
+                                            <button onClick={(e) => this.onNextMonthClick()}><img src={arrow} /></button>
+                                        </div>
                                     </div>
-                                    <label className='week_desc card'>
-                                        Week {calendar.week + 1}
-                                    </label>
-                                    <label>{monthsOfYear[calendar.month]}, {calendar.year}</label>
-                                    {/* {calendar[currentWeek] ? calendar[currentWeek][0].date + '-' + calendar[currentWeek][6].date : null} */}
-                                </div>
-                                <div className='week_calendar'>
-                                    <div className='header_week_calendar'>
-                                        {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item, index) => {
-                                            const isToday = today[0] === item.date && today[1] === calendar.month && today[2] === calendar.year;
-                                            return <div key={item.date} className={isToday ? 'today' : (item.disabled ? 'disabled' : '')}><label>{daysOfWeek[index]}</label><label>{item.date}</label></div>
+                                    <div className='header_month_calendar'>
+                                        {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
+                                    </div>
+                                    <div className='body_month_calendar'>
+                                        {calendar.datesOfCalendar.map((week, iw) => week.map((item) =>
+                                            <div key={iw + item.date} className={iw === calendar.week ? 'current_week' : ''}>
+                                                <div className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}><label>{item.date}</label>
+                                                    {this.pointEventOnCalendar(item)}
+                                                </div>
+                                            </div>))
                                         }
-                                        ) : null}
                                     </div>
-                                    <div className='body_week_calendar' key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()} >
-                                        <div className='body_container'>
-                                            {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item) => {
+                                </div>
+                                <div className='card today_dashboard_container container'>
+                                    <label>Today, {monthsOfYear[today[1]].substr(0, 3)} {today[0]}</label>
+                                    {plannerEvents.map((item, index) => {
+                                        const { startDate, endDate, plannerType } = item;
+                                        const temp_start_dt = parseDateStringToArray(startDate);
+                                        const temp_end_dt = parseDateStringToArray(endDate);
+                                        const start_dt = new Date(temp_start_dt[0], temp_start_dt[1] - 1, temp_start_dt[2]);
+                                        const end_dt = new Date(temp_end_dt[0], temp_end_dt[1] - 1, temp_end_dt[2]);
+                                        const date = new Date(today[2], today[1], today[0]);
+                                        return date.getTime() >= start_dt.getTime() && date.getTime() <= end_dt.getTime() ?
+                                            <div className='today_planner_item' key={index} >
+                                                <div className='today_planner_item_left'>
+                                                    <div className='tab_color' style={{ backgroundColor: '#' + plannerType.typeColor }} />
+                                                </div>
+                                                <div className='today_planner_item_right' style={{ backgroundColor: '#' + plannerType.typeColor + '2a' }}>
+                                                    <div className='name'>{item.taskName} ({plannerType.typeName})</div>
+                                                    <div className='period_time'>{monthsOfYear[temp_start_dt[1] - 1].substr(0, 3)} {temp_start_dt[2]}, {temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3)} {temp_end_dt[2]}, {temp_end_dt[0]}</div>
+                                                    {/* <div className='owner'>{item.user.username}</div> */}
+                                                </div>
+                                            </div> : null;
+                                    }
+                                    )}
+                                </div>
+                            </div>
+                            <div className='right'>
+                                <div className='week_calendar_overview_container'>
+                                    <div className='top_week_calendar'>
+                                        <div className='button_container'>
+                                            <button onClick={(e) => this.onPreviousWeekClick()}><img src={arrow} /></button>
+                                            <button onClick={(e) => this.onNextWeekClick()}><img src={arrow} /></button>
+                                        </div>
+                                        <label className='week_desc card'>
+                                            Week {calendar.week + 1}
+                                        </label>
+                                        <label>{monthsOfYear[calendar.month]}, {calendar.year}</label>
+                                        {/* {calendar[currentWeek] ? calendar[currentWeek][0].date + '-' + calendar[currentWeek][6].date : null} */}
+                                    </div>
+                                    <div className='week_calendar'>
+                                        <div className='header_week_calendar'>
+                                            {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item, index) => {
                                                 const isToday = today[0] === item.date && today[1] === calendar.month && today[2] === calendar.year;
-                                                return <div key={item.date} className={isToday ? 'today' : (item.disabled ? 'disabled' : '')}></div>
+                                                return <div key={item.date} className={isToday ? 'today' : (item.disabled ? 'disabled' : '')}><label>{daysOfWeek[index]}</label><label>{item.date}</label></div>
                                             }
                                             ) : null}
                                         </div>
-                                        <div className='list_planner_container'>
-                                            {plannerEvents.map((item, index) =>
-                                                <EventPlanner key={index} planner={item} week={calendar.datesOfCalendar[calendar.week]} index={index} maxLength={plannerEvents.length} />
-                                            )}
+                                        <div className='body_week_calendar' key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()} >
+                                            <div className='body_container'>
+                                                {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item) => {
+                                                    const isToday = today[0] === item.date && today[1] === calendar.month && today[2] === calendar.year;
+                                                    return <div key={item.date} className={isToday ? 'today' : (item.disabled ? 'disabled' : '')}></div>
+                                                }
+                                                ) : null}
+                                            </div>
+                                            <div className='list_planner_container'>
+                                                {plannerEvents.map((item, index) =>
+                                                    <EventPlanner key={index} planner={item} week={calendar.datesOfCalendar[calendar.week]} index={index} maxLength={plannerEvents.length} />
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className='week_pin_calendar'>
-                                    {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item, index) => <WeekPinOfCalendar key={index} planners={plannerEvents} itemDate={item} index={index} today={today} />) : null}
+                                    <div className='week_pin_calendar'>
+                                        {calendar.datesOfCalendar[calendar.week] ? calendar.datesOfCalendar[calendar.week].map((item, index) => <WeekPinOfCalendar key={index} planners={plannerEvents} itemDate={item} index={index} today={today} />) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </ContentBox>
+                    </ContentBox>
+                </div>
             </React.Fragment> : null
             }
         </React.Fragment>)
@@ -287,9 +289,9 @@ const WeekPinOfCalendar = (props) => {
                     return (<React.Fragment key={i}>
                         {item_date.getTime() >= start_dt.getTime() && item_date.getTime() <= end_dt.getTime() ?
                             <div className='body_pin_date_container'>
-                                <div className={className} >
+                                <div className={className} style={{ backgroundColor: '#' + plannerType.typeColor + '34' }} >
                                     <img src={assignIcon} />
-                                    <div className='line' style={{ backgroundColor: '#' + plannerType.typeColor + '8e' }} />
+                                    {/* <div className='line' style={{ backgroundColor: '#' + plannerType.typeColor + '8e' }} /> */}
                                     <div className='planner_desc_container'>
                                         <label className='planner_taskname'>{item.taskName} <label className='planner_period'>({monthsOfYear[temp_start_dt[1] - 1].substr(0, 3)} {temp_start_dt[2]}, {temp_start_dt[0]} - {monthsOfYear[temp_end_dt[1] - 1].substr(0, 3)} {temp_end_dt[2]}, {temp_end_dt[0]})</label></label>
                                         <label className='planner_owner'>{item.user.username}</label>

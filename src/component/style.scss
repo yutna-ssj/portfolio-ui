@@ -116,23 +116,24 @@ $color_loading: #bdbdbd3f;
     overflow: hidden;
     overflow-y: auto !important;
     background-color: $color_primary_bg;
+    height: 100%;
 }
 
 .left_component {
+    width: var(--left-bar-width);
     padding-left: 5px;
     grid-area: left;
-    width: 200px;
     background-color: $color_white;
     z-index: 6;
     @include prefix(position, sticky, webkit moz ms o);
-    top: 0px;
+    top: var(--top);
     overflow-x: hidden;
     transition: 0.3s;
     border-right: 1px solid $color_border;
     height: calc(var(--vh, 1vh) * 100);
     &._collapse {
+        width: var(--left-bar-width);
         grid-area: left;
-        width: 50px;
         padding-left: 0px !important;
 
         & .group_left_nav .left_nav {
@@ -307,7 +308,7 @@ $color_loading: #bdbdbd3f;
     width: auto;
     grid-area: content;
     position: relative;
-    height: inherit;
+    height: calc((var(--vh, 1vh) * 100) - 55px) !important;
 }
 
 .safety_bottom {
@@ -317,11 +318,11 @@ $color_loading: #bdbdbd3f;
 
 .top_bar_container {
     grid-area: top;
-    height: 55px;
+    height: var(--top-bar-height);
     background-color: $color_white;
     width: 100%;
     @include prefix(position, sticky, webkit moz ms o);
-    top: 0px;
+    top: var(--top) !important;
     z-index: 5;
     display: inline-grid;
     grid-template-columns: 1fr 1fr;
@@ -1055,6 +1056,85 @@ div[class*="col-"] {
     }
 }
 
+.type_select_container {
+    position: relative;
+    height: 30px !important;
+    border: 1px solid $color_border;
+    border-radius: 10px;
+    width: auto;
+    & .select {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 0px 10px;
+        min-width: 60px;
+        height: 30px;
+
+        & div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 2px 10px 4px 0px;
+            margin-left: 2px;
+            font-weight: 600;
+            font-size: 16px;
+            color: $color_primary_text !important;
+            width: 100%;
+            height: 100%;
+        }
+
+        & img {
+            height: 8px;
+            width: 8px;
+            transform: rotate(90deg);
+            filter: brightness(0.7);
+            @include prefix(transition, all 0.1s linear, moz webkit);
+        }
+
+        &.clicked {
+            & img {
+                transform: rotate(270deg);
+            }
+        }
+    }
+
+    & .option_group {
+        z-index: 10;
+        position: absolute;
+        width: 100%;
+        max-width: auto;
+        max-height: 350px;
+        left: 0;
+        background-color: $color_white;
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px 3px $color_shadow;
+        overflow-y: auto;
+        @include prefix(animation, scale-popup 0.2s, moz webkit);
+
+        & div {
+            margin: 5px 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            @include prefix(user-select, none, moz webkit);
+            border-radius: 10px;
+            color: $color_primary_text;
+            font-size: 15px;
+
+            &.disabled {
+                color: $color_disabled_text;
+                cursor: initial;
+            }
+
+            &:not(.disabled):hover {
+                transition: 0.2s;
+                background-color: $color_bg_blue;
+            }
+        }
+    }
+}
+
 .input_container {
     border: 1px solid $color_border;
     padding: 5px 15px;
@@ -1430,3 +1510,18 @@ div[class*="col-"] {
 }
 
 // INPUT //
+
+// POPUP //
+
+.popup_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: calc(var(--scroll-top) - 55px);
+    left: 0;
+    height: 100vh;
+    position: absolute;
+    background-color: $color_shadow;
+    z-index: 3;
+    width: 100%;
+}

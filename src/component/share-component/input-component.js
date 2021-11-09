@@ -28,6 +28,96 @@ export const TextAreaInput = (props) => {
     </div>)
 }
 
+export class TypeSelectInput extends React.Component {
+
+    constructor(_props) {
+        super(_props);
+
+        this.state = { isOpen: false };
+    }
+
+    componentDidMount() {
+        document.addEventListener('mousedown', this.onDocClick);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.onDocClick);
+    }
+
+    onMouseLeave = () => {
+        this.isMouseLeaveOnDropdown = true;
+    }
+
+    onMouseEnter = () => {
+        this.isMouseLeaveOnDropdown = false;
+    }
+
+    onDocClick = () => {
+        const { isOpen } = this.state;
+        if (this.isMouseLeaveOnDropdown && isOpen) {
+            this.setState({ isOpen: false });
+            this.isMouseLeaveOnDropdown = false;
+        }
+    }
+
+    buttonRef = (ref) => {
+        if (ref) {
+            ref.addEventListener('mouseleave', this.onMouseLeave);
+            ref.addEventListener('mouseenter', this.onMouseEnter);
+        }
+    }
+
+    mappingOptions = () => {
+        const { children } = this.props;
+        const options = [];
+        children.map((child) => {
+            if (React.isValidElement(child)) {
+                options.push(this.getOption(child));
+            } else if (child.length > 0) {
+                for (let i = 0; i < child.length; i++) {
+                    options.push(this.getOption(child[i]));
+                }
+            }
+        })
+
+        return options;
+    }
+
+    getOption = (child) => {
+        const { value, children, disabled } = child.props;
+        const { onChange } = this.props;
+        return <div key={value} value={value} className={disabled ? 'disabled' : ''} onClick={(e) => {
+            if (!disabled) {
+                this.setState({ isOpen: false });
+                onChange(value);
+            }
+        }}>{children}</div>;
+    }
+
+    render() {
+        const { label, value, disabled } = this.props;
+        const { isOpen } = this.state;
+        const options = this.mappingOptions();
+        const value_label = options.find((option) => option.props.value === value) ? options.find((option) => option.props.value === value).props.children : '';
+        return (
+            <div className='type_select_container'>
+                <div ref={this.buttonRef}>
+                    <div className={isOpen ? 'select clicked' : 'select'} onClick={() => this.setState({ isOpen: !isOpen })}>
+                        <div className={value ? '' : 'placeholder-custom'}>{value_label}</div>
+                        <img alt='arrow' src={arrow} />
+                    </div>
+                    {isOpen ? <div className='option_group'>
+                        {
+                            options.map((option) => option)
+                        }
+                    </div> : null
+                    }
+                </div>
+                {isOpen ? <span className="underline focus" /> : <span className="underline" />}
+            </div>);
+    }
+}
+
 
 
 export class SelectInput extends React.Component {

@@ -9,7 +9,6 @@ import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import { authReducer, httpReducer } from './redux/reducer';
 
-
 export const store = createStore(combineReducers({ httpState: httpReducer, authState: authReducer }));
 
 ReactDOM.render(

@@ -9,3 +9,15 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+:root {
+  --scroll-top: 0px;
+  --top: 0px;
+  --vh: 1vh;
+  --left-bar-width: 50px;
+  --top-bar-height: 55px;
+  --planner-detail-left: 0px;
+  --planner-detail-top: 0px;
+  --hover-planner-color: white;
+  --planner-color: white;
+}
