@@ -2,14 +2,16 @@ import React, { useState } from "react";
 
 import slim_arrow from '../../../../assets/slim-arrow.png';
 import arrow from '../../../../assets/arrow.svg';
-import bell from '../../../../assets/bell.png';
+import plus from '../../../../assets/plus.png';
 import { TypeSelectInput } from "../../../share-component/input-component";
+import CalendarMonthComponent from "./calendar-month-component";
+import CalendarMonth from "./calendar-month-component";
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const datesOfMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-const SHOW_PEIOD_TYPE = {
+const SHOW_PERIOD_TYPE = {
     DAY: 'DAY',
     WEEK: 'WEEK',
     MONTH: 'MONTH'
@@ -20,7 +22,7 @@ export default class CalendarMeeting extends React.Component {
     constructor(_props) {
         super(_props);
 
-        this.state = { showPeriodType: SHOW_PEIOD_TYPE.WEEK }
+        this.state = { showPeriodType: SHOW_PERIOD_TYPE.WEEK }
     }
 
     render() {
@@ -57,14 +59,14 @@ export default class CalendarMeeting extends React.Component {
                             <div className='header_bar_container'>
                                 <div className='left'><label className='lg_label'>{monthsOfYear[calendar.month]} {calendar.year}</label></div>
                                 <div className='right'>
-                                    <button className='planner_create_button' style={{ marginRight: '10px' }}>Create</button>
+                                    <button className='planner_create_button' style={{ marginRight: '10px' }}><img src={plus} /> Create</button>
                                     {/* <div className='notification_container'>
                                         <img src={bell} />
                                     </div> */}
                                     <TypeSelectInput value={showPeriodType} onChange={(v) => this.setState({ showPeriodType: v })}>
-                                        <option value={SHOW_PEIOD_TYPE.DAY}>Day</option>
-                                        <option value={SHOW_PEIOD_TYPE.WEEK}>Week</option>
-                                        <option value={SHOW_PEIOD_TYPE.MONTH}>Month</option>
+                                        <option value={SHOW_PERIOD_TYPE.DAY}>Day</option>
+                                        <option value={SHOW_PERIOD_TYPE.WEEK}>Week</option>
+                                        <option value={SHOW_PERIOD_TYPE.MONTH}>Month</option>
                                     </TypeSelectInput>
                                     <div className='button_container' style={{ marginLeft: '15px' }}>
                                         <button className='tiny_button arrow_previous' onClick={(e) => { }}><img src={slim_arrow} /></button>
@@ -72,6 +74,7 @@ export default class CalendarMeeting extends React.Component {
                                     </div>
                                 </div>
                             </div>
+                            <CalendarMonth calendar={calendar} today={today} />
                         </div>
                     </div>
                 </div>
