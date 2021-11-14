@@ -27,6 +27,9 @@ class MessageComponent extends React.Component {
             case MESSAGE_TYPE.SUCCESS:
                 message = <SuccessMessage main={mainMessage} sub={subMessage} onClose={() => onClose()} />
                 break;
+            default:
+                message = <InfoMessage main={mainMessage} sub={subMessage} onClose={() => onClose()} />
+                break;
         }
         return (
             <React.Fragment >
@@ -42,35 +45,35 @@ export default MessageComponent;
 const DangerMessage = (props) => {
     const { main, sub, onClose } = props;
     return (<div className='message_container'>
-        <img src={warning} />
+        <img src={warning} alt='warning' />
         <div className='message'>
             <div className='main'>{main}</div>
             <div className='sub'>{sub}</div>
         </div>
-        <button onClick={(e) => onClose()}><img src={x} /></button>
+        <button onClick={(e) => onClose()}><img src={x} alt='x' /></button>
     </div>);
 }
 
 const InfoMessage = (props) => {
     const { main, sub, onClose } = props;
     return (<div className='message_container card'>
-        <img src={info} />
+        <img src={info} alt='info' />
         <div className='message'>
             <div className='main'>{main}</div>
             <div className='sub'>{sub}</div>
         </div>
-        <button onClick={(e) => onClose()}><img src={x} /></button>
+        <button onClick={(e) => onClose()}><img src={x} alt='x' /></button>
     </div>);
 }
 
 const SuccessMessage = (props) => {
     const { main, sub, onClose } = props;
     return (<div className='message_container card'>
-        <img src={success} />
+        <img src={success} alt='success' />
         <div className='message'>
             <div className='main'>{main}</div>
             <div className='sub'>{sub}</div>
         </div>
-        <button onClick={(e) => onClose()}><img src={x} /></button>
+        <button onClick={(e) => onClose()}><img src={x} alt='x' /></button>
     </div>);
 }

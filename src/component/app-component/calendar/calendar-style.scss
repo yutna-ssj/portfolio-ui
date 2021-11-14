@@ -2,7 +2,7 @@
 
 $color_white: #ffffff;
 $color_primary_bg: #f5f5f5;
-$color_bg_blue: #eaf4ff;
+$color_bg_blue: #d4e5ff;
 $color_primary_darkblue: #7596dd;
 
 $color_border: #cacaca;
@@ -27,7 +27,26 @@ $color_hover: #e9e9e9;
     row-gap: 1px;
     column-gap: 12px;
     grid-template-areas: "left right";
-    calendar_container & .left {
+    & .left {
+        grid-area: left;
+        width: 100%;
+        
+    }
+
+    & .right {
+        grid-area: right;
+        width: 100%;
+    }
+}
+
+.meeting_calendar_container {
+    display: grid;
+    grid-template-columns: 250px auto;
+    grid-template-rows: 1fr;
+    row-gap: 1px;
+    column-gap: 12px;
+    grid-template-areas: "left right";
+    & .left {
         grid-area: left;
     }
 
@@ -92,8 +111,7 @@ $color_hover: #e9e9e9;
             flex: 0 1 14.28%;
             text-align: center;
             color: $color_disabled_text;
-            font-size: 13px;
-            font-weight: 550;
+            font-size: 12px;
         }
     }
 
@@ -115,7 +133,7 @@ $color_hover: #e9e9e9;
             }
         }
 
-        & div {
+        & ._item_day_calendar {
             position: relative;
             display: flex;
             margin: 2px 0px !important;
@@ -124,26 +142,74 @@ $color_hover: #e9e9e9;
             height: 30px;
             width: 100% !important;
             flex: 1 0 14.28%;
-            color: $color_primary_text;
-            font-size: 13px;
-            font-weight: 550;
+
             cursor: pointer;
             @include prefix(user-select, none, moz webkit);
 
-            &.today {
-                position: absolute;
-                color: $color_primary_darkblue;
-                font-weight: bold;
+            &:hover {
+                & ._item_day {
+                    transition: 0.2s;
+                    background-color: $color_shadow;
+                    color: $color_primary_text !important;
+                }
             }
 
-            &.disabled {
-                position: absolute;
-                color: $color_disabled_text !important;
+            &:active {
+                & ._item_day {
+                    transition: 0.2s;
+                    background-color: #7596dd94;
+                    color: $color_primary_text !important;
+                }
+            }
+
+            &._start_day {
+                border-top-left-radius: 25px;
+                border-bottom-left-radius: 25px;
+            }
+
+            &._end_day {
+                border-top-right-radius: 25px;
+                border-bottom-right-radius: 25px;
+            }
+
+            &._selected {
+                transition: 0.2s;
+                background-color: $color_bg_blue;
+                & ._item_day {
+                    color: $color_primary_darkblue;
+                }
+
+                &._disabled {
+                    background-color: $color_shadow !important;
+                }
+            }
+
+            & ._item_day {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: $color_primary_text;
+                font-size: 13px;
+                line-height: 13px;
+                font-weight: 550;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                &.today {
+                    position: absolute;
+                    color: $color_white !important;
+                    background-color: $color_primary_darkblue !important;
+                }
+
+                &.disabled {
+                    position: absolute;
+                    color: $color_disabled_text;
+                }
             }
 
             & .point_container {
                 position: absolute;
-                bottom: -2px;
+                bottom: 0;
                 display: flex;
                 flex-flow: row nowrap;
                 justify-content: center;
@@ -792,6 +858,13 @@ $color_hover: #e9e9e9;
         // }
     }
 
+    .meeting_calendar_container {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        grid-template-areas: "left" "right";
+    }
+
     .week_calendar_overview_container {
         & .top_week_calendar {
             font-size: 24px;
@@ -851,6 +924,17 @@ $color_hover: #e9e9e9;
 
         & .left {
             width: auto !important;
+        }
+    }
+
+    .calendar_container.sm {
+        display: grid;
+        grid-template-columns: auto 1fr !important;
+        grid-template-rows: 1fr;
+        grid-template-areas: "left right";
+
+        & .left {
+            width: 250px !important;
         }
     }
 
@@ -935,13 +1019,15 @@ $color_hover: #e9e9e9;
 }
 
 .planner_detail {
-    position: absolute;
+    position: absolute !important;
     left: calc(var(--planner-detail-left) - var(--left-bar-width));
     top: calc(var(--planner-detail-top) - var(--top-bar-height) - 30px);
     width: 400px !important;
     margin: 0px 10px !important;
     background-color: $color_white;
     border-radius: 10px;
+    height: auto !important;
+    margin-bottom: 45px !important;
     @include prefix(animation, scale-popup 0.2s !important, moz webkit);
     border: 1px solid $color_border;
     z-index: 10;
@@ -1122,6 +1208,8 @@ $color_hover: #e9e9e9;
     white-space: nowrap;
     display: flex;
     flex-flow: row wrap;
+    height: auto;
+
     & .header_planner_calendar {
         width: auto;
         position: relative;
@@ -1545,15 +1633,19 @@ $color_hover: #e9e9e9;
     }
 }
 
-.header_bar_container {
+._calendar_content {
+    @include prefix(box-shadow, 0px 1px 5px 2px $color_shadow !important, moz webkit);
+    border-radius: 10px;
+}
+
+._header_bar_container {
     height: 100px;
     background-color: $color_white;
     display: flex;
     width: 100%;
     padding: 0px 20px;
     border-radius: 10px 10px 0px 0px !important;
-    @include prefix(box-shadow, 0px 1px 5px 2px $color_shadow !important, moz webkit);
-    & .left {
+    & ._header_bar_left {
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -1561,7 +1653,7 @@ $color_hover: #e9e9e9;
         flex: 1 0 auto;
     }
 
-    & .right {
+    & ._header_bar_right {
         width: auto;
         display: inline-flex;
         justify-content: flex-end;
@@ -1633,10 +1725,10 @@ $color_hover: #e9e9e9;
     }
 }
 
-.calendar_month_container {
+.calendar_timeline_container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 270px);
     overflow-y: auto;
     & ._header_container {
         position: sticky;
@@ -1646,12 +1738,13 @@ $color_hover: #e9e9e9;
         background-color: $color_white;
         border-top: 1px solid $color_border;
         height: 80px;
-
+        z-index: 3;
         & ._header_week_container {
             width: calc(100% - 45px);
             display: inline-flex;
             & ._header_date {
-                flex: 0 0 14.28%;
+                // width: 14.28%;
+
                 border-right: 1px solid $color_border;
                 border-bottom: 1px solid $color_border;
                 display: flex;
@@ -1659,11 +1752,19 @@ $color_hover: #e9e9e9;
                 flex-flow: column wrap;
                 height: 100%;
                 &:last-child {
+                    // width: 14.32%;
+
                     border-right: none !important;
                 }
 
                 &.today {
-                    background-color: #abcef548 !important;
+                    & ._date_label {
+                        color: $color_primary_darkblue !important;
+                    }
+
+                    & ._weekly_day {
+                        color: $color_primary_darkblue !important;
+                    }
                 }
 
                 & ._date_label {
@@ -1697,10 +1798,11 @@ $color_hover: #e9e9e9;
                 width: calc(100% - 45px);
                 display: flex;
                 & ._period_block {
-                    flex: 0 0 14.28%;
+                    // flex: 0 0 14.28%;
                     border-right: 1px solid $color_border;
                     border-bottom: 1px solid $color_border;
                     &:last-child {
+                        // flex: 0 0 14.32% !important;
                         border-right: none !important;
                     }
                 }
@@ -1720,6 +1822,102 @@ $color_hover: #e9e9e9;
         bottom: -7px;
         right: 5px;
         font-size: 12px;
+    }
+}
+
+._current_time_line {
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background-color: $color_primary_darkblue;
+    z-index: 2;
+
+    & ._current_time {
+        display: flex;
+        justify-content: center;
+        position: absolute;
+        border-radius: 0px 0px 10px 10px;
+        padding: 2px 4px;
+        top: 0;
+        left: 2px;
+        font-size: 12px;
+        line-height: 14px;
+        background-color: $color_primary_darkblue;
+        font-weight: 500;
+        color: $color_white;
+        width: 40px;
+    }
+}
+
+.calendar_block_container {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 270px);
+    & ._header_container {
+        width: 100%;
+        & ._header_week_container {
+            display: flex;
+
+            & ._header_date {
+                height: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 14.28%;
+                border-right: 1px solid $color_border;
+                border-top: 1px solid $color_border;
+                border-bottom: 1px solid $color_border;
+                background-color: $color_white;
+                font-size: 14px;
+                font-weight: 550;
+                color: $color_primary_text;
+                &:last-child {
+                    width: 14.32% !important;
+                    border-right: none !important;
+                }
+            }
+        }
+    }
+
+    & ._body_container {
+        display: flex;
+        flex-flow: row wrap;
+        height: calc(100vh - 300px);
+        & ._block_date {
+            flex: 1 0 14.28%;
+            // height: 50%;
+            background-color: $color_white;
+            border-right: 1px solid $color_border;
+            border-bottom: 1px solid $color_border;
+            display: flex;
+            justify-content: center;
+
+            &:nth-child(7n + 0) {
+                flex: 1 0 14.32% !important;
+                border-right: none !important;
+            }
+
+            & ._item_day {
+                margin-top: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: $color_primary_text;
+                font-size: 15px;
+                width: 25px;
+                height: 25px;
+                font-weight: 550;
+                border-radius: 50%;
+                &.today {
+                    color: $color_white !important;
+                    background-color: $color_primary_darkblue !important;
+                }
+
+                &.disabled {
+                    color: $color_disabled_text;
+                }
+            }
+        }
     }
 }
 

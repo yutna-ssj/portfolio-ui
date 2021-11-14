@@ -118,7 +118,7 @@ export default class CalendarDashBoard extends React.Component {
         const { plannerEvents } = this.state;
         return (<React.Fragment>
             {show ? <React.Fragment>
-                <div className='app_container container'>
+                <div className='container'>
                     <ContentBox id='1' title='Dashboard Overview'>
                         <div className='row'>
                             <div className='col-md-3'>
@@ -166,13 +166,27 @@ export default class CalendarDashBoard extends React.Component {
                                         {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
                                     </div>
                                     <div className='body_month_calendar'>
-                                        {calendar.datesOfCalendar.map((week, iw) => week.map((item) =>
-                                            <div key={iw + item.date} className={iw === calendar.week ? 'current_week' : ''}>
-                                                <div className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}><label>{item.date}</label>
+                                        {calendar.datesOfCalendar.map((week, iw) => week.map((item) => {
+                                            const isToday = (today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year);
+                                            let itemDateClassname = '_item_day';
+                                            let itemDateBlockClassname = '_item_day_calendar';
+                                            if (isToday) {
+                                                itemDateClassname = itemDateClassname.concat(' today');
+                                            }
+
+                                            if (calendar.week === iw) {
+                                                itemDateBlockClassname = itemDateBlockClassname.concat(' current_week');
+                                            }
+
+                                            if (item.disabled) {
+                                                itemDateClassname = itemDateClassname.concat(' disabled');
+                                            }
+                                            return (<div className={itemDateBlockClassname} key={iw + item.date}>
+                                                <div className={itemDateClassname}><div>{item.date}</div>
                                                     {this.pointEventOnCalendar(item)}
                                                 </div>
-                                            </div>))
-                                        }
+                                            </div>);
+                                        }))}
                                     </div>
                                 </div>
                                 <div className='card today_dashboard_container container'>
@@ -242,6 +256,7 @@ export default class CalendarDashBoard extends React.Component {
                             </div>
                         </div>
                     </ContentBox>
+                    <div className='bottom_safety' />
                 </div>
             </React.Fragment> : null
             }

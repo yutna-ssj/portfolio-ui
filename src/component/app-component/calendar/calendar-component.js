@@ -93,9 +93,10 @@ class CalendarComponent extends React.Component {
                         onStateChange={(key, value) => this.onDashboardCalendarChange(key, value)} getCalendar={(year, month, week) => this.setState({ dashboardCalendar: this.getCalendar(year, month, week) })} />
                     <CalendarPlanner show={tabSelected === 1} calendar={plannerCalendar} today={today}
                         onStateChange={(key, value) => this.onPlannerCalendarChange(key, value)} getCalendar={(year, month, week) => this.setState({ plannerCalendar: this.getCalendar(year, month, week) })} />
-                    <CalendarMeeting show={tabSelected === 2} calendar={plannerCalendar} today={today} />
-                    <div className='safety_bottom'></div>
+                    <CalendarMeeting show={tabSelected === 2} />
+
                 </div>
+
             </React.Fragment>
 
 

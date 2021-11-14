@@ -48,8 +48,6 @@ export default class CalendarPlanner extends React.Component {
         const date2 = new Date('11/6/2021');
         const diffTime = Math.abs(date2 - date1);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        console.log(diffTime + " milliseconds");
-        console.log(diffDays + " days");
 
     }
 
@@ -97,8 +95,12 @@ export default class CalendarPlanner extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        const { calendar, onStateChange } = this.props;
         if (snapshot) {
             this.getPlannerEvents()
+            if (calendar.week % 2 !== 0) {
+                onStateChange('week', calendar.week - 1);
+            }
         }
     }
 
@@ -218,22 +220,17 @@ export default class CalendarPlanner extends React.Component {
 
 
     render() {
-        const { show, calendar, today } = this.props;
+        const { show, calendar, today, onStateChange } = this.props;
         const { isNewCreate, createForm, subUserOptions, plannerTypeOptions, plannerEvents, isDetailOpen, form, selectedPlanner, tabPlanner } = this.state;
-        console.log(tabPlanner);
         const weeks = [];
         if (calendar.week % 2 === 0) {
             weeks.push(calendar.week)
             weeks.push(calendar.week + 1);
-        } else {
-            weeks.push(calendar.week - 1);
-            weeks.push(calendar.week)
         }
 
         return (<React.Fragment>
             {show ? <React.Fragment>
-                <div className='app_container container'>
-
+                <div className='container'>
                     <div className='calendar_container'>
                         <div className='left'>
                             <div className='card container month_calendar_container'>
@@ -248,13 +245,28 @@ export default class CalendarPlanner extends React.Component {
                                     {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
                                 </div>
                                 <div className='body_month_calendar'>
-                                    {calendar.datesOfCalendar.map((week, iw) => week.map((item) =>
-                                        <div key={iw + item.date} className={weeks.includes(iw) ? 'current_week' : ''}>
-                                            <div className={(today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year) ? 'today' : (item.disabled ? 'disabled' : '')}><label>{item.date}</label>
+                                    {calendar.datesOfCalendar.map((week, iw) => week.map((item) => {
+                                        const isToday = (today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year);
+                                        let itemDateClassname = '_item_day';
+                                        let itemDateBlockClassname = '_item_day_calendar';
+                                        if (isToday) {
+                                            itemDateClassname = itemDateClassname.concat(' today');
+                                        }
+
+                                        if (weeks.includes(iw)) {
+                                            itemDateBlockClassname = itemDateBlockClassname.concat(' current_week');
+                                        }
+
+                                        if (item.disabled) {
+                                            itemDateClassname = itemDateClassname.concat(' disabled');
+                                            // itemDateBlockClassname = itemDateBlockClassname.concat(' _disabled');
+                                        }
+                                        return (<div className={itemDateBlockClassname} key={iw + item.date}>
+                                            <div className={itemDateClassname}><div>{item.date}</div>
                                                 {this.pointEventOnCalendar(item)}
                                             </div>
-                                        </div>))
-                                    }
+                                        </div>);
+                                    }))}
                                 </div>
                             </div>
                         </div>
@@ -357,6 +369,7 @@ export default class CalendarPlanner extends React.Component {
                     <div className='sm_planner_container' key={calendar.month.toString() + calendar.year.toString() + calendar.week.toString()}>
                         {<SmPlannerEvents events={plannerEvents} today={today} weeks={calendar.datesOfCalendar[weeks[0]].concat(calendar.datesOfCalendar[weeks[1]])} />}
                     </div>
+                    <div className='bottom_safety' />
                 </div>
                 {isDetailOpen ? <EventDetail form={form} detailRef={this.detailRef} onClose={() => this.setState({ isDetailOpen: false, selectedPlanner: -1 })} /> : null}
             </React.Fragment > : null
@@ -458,7 +471,6 @@ const SmPlannerEvents = (props) => {
                     } else {
                         setTabPlanner(key)
                     }
-                    console.log(tabPlanner);
                 }}>
                     {isToday ? <div className='today'>Today, {monthsOfYear[today[1]].substr(0, 3)} {today[0]}</div > : null
                     }

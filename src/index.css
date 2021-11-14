@@ -10,6 +10,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --scroll-top: 0px;
   --top: 0px;

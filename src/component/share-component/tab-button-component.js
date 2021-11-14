@@ -60,9 +60,10 @@ export class TabButtonGroup extends React.Component {
                     if (React.isValidElement(child)) {
                         return React.cloneElement(child, { onChange: (id) => { onChange(id) }, tabSelected });
                     }
+                    return null;
                 })}</div>
                 <div ref={this.buttonRef}>
-                    <div className={isGroupOpen ? 'sm_tab_button_group_button clicked' : 'sm_tab_button_group_button'} onClick={() => this.setState({ isGroupOpen: !isGroupOpen })}><img src={menu} /></div>
+                    <div className={isGroupOpen ? 'sm_tab_button_group_button clicked' : 'sm_tab_button_group_button'} onClick={() => this.setState({ isGroupOpen: !isGroupOpen })}><img src={menu} alt='menu' /></div>
                     {
                         isGroupOpen ? <div className='sm_tab_button_group'>
                             {this.props.children.map((child) => {

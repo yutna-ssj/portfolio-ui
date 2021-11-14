@@ -70,7 +70,7 @@ export class TypeSelectInput extends React.Component {
     mappingOptions = () => {
         const { children } = this.props;
         const options = [];
-        children.map((child) => {
+        children.forEach((child) => {
             if (React.isValidElement(child)) {
                 options.push(this.getOption(child));
             } else if (child.length > 0) {
@@ -95,7 +95,7 @@ export class TypeSelectInput extends React.Component {
     }
 
     render() {
-        const { label, value, disabled } = this.props;
+        const { value } = this.props;
         const { isOpen } = this.state;
         const options = this.mappingOptions();
         const value_label = options.find((option) => option.props.value === value) ? options.find((option) => option.props.value === value).props.children : '';
@@ -162,7 +162,7 @@ export class SelectInput extends React.Component {
     mappingOptions = () => {
         const { children } = this.props;
         const options = [];
-        children.map((child) => {
+        children.forEach((child) => {
             if (React.isValidElement(child)) {
                 options.push(this.getOption(child));
             } else if (child.length > 0) {
@@ -298,7 +298,7 @@ export class DurationInput extends React.Component {
                 datesOfWeek.push(item_date);
                 dateOfCalendar++;
                 if (dateOfCalendar > datesOfMonth[monthOfCalendar]) {
-                    monthOfCalendar = monthOfCalendar == 11 ? 0 : monthOfCalendar + 1;
+                    monthOfCalendar = monthOfCalendar === 11 ? 0 : monthOfCalendar + 1;
                     yearOfCalendar = monthOfCalendar === 0 ? yearOfCalendar + 1 : yearOfCalendar;
                     dateOfCalendar = 1;
                 }
@@ -337,7 +337,7 @@ export class DurationInput extends React.Component {
     }
 
     render() {
-        const { label, disabled, value, onChange, placeholder, fromDateValue, toDateValue } = this.props;
+        const { label, disabled, onChange, fromDateValue, toDateValue } = this.props;
         const { firstCalendar, secondCalendar, isOpen, tempFromDate, tempToDate, errorMessages } = this.state;
         return (<div className={disabled ? 'input_container disabled' : 'input_container'}>
             <div className='input_group'>
@@ -346,30 +346,41 @@ export class DurationInput extends React.Component {
                     <div ref={this.buttonRef}>
                         <div className={isOpen ? 'date_picker clicked' : 'date_picker'} onClick={() => this.onOpen()}>
                             <div>{fromDateValue[1] ? monthsOfYear[fromDateValue[1] - 1].substr(0, 3) : ''} {fromDateValue[2] ? fromDateValue[2] : ''}, {fromDateValue[0] ? fromDateValue[0] : ''} - {toDateValue[1] ? monthsOfYear[toDateValue[1] - 1].substr(0, 3) : ''} {toDateValue[2] ? toDateValue[2] : ''}, {toDateValue[0] ? toDateValue[0] : ''}</div>
-                            <img src={calendarIcon} />
+                            <img src={calendarIcon} alt='calendarIcon' />
                         </div>
                         {isOpen ? <div className='duration_picker_container card' style={{ position: 'absolute', height: 'auto' }}>
-                            <button className='collaspe_button' onClick={() => this.setState({ isOpen: false })}><img src={xIcon} /></button>
+                            <button className='collaspe_button' onClick={() => this.setState({ isOpen: false })}><img src={xIcon} alt='xIcon' /></button>
                             <div className='duration_calendar_container container'>
                                 <div className='month_calendar_container'>
                                     <label>From date</label>
                                     <div className='top_month_calendar'>
                                         <label>{monthsOfYear[firstCalendar.month]} {firstCalendar.year}</label>
                                         <div className='button_container'>
-                                            <button onClick={(e) => this.onFirstCalendarPreviousMonthClick()}><img src={arrow} /></button>
-                                            <button onClick={(e) => this.onFirstCalendarNextMonthClick()}><img src={arrow} /></button>
+                                            <button onClick={(e) => this.onFirstCalendarPreviousMonthClick()}><img src={arrow} alt='arrow' /></button>
+                                            <button onClick={(e) => this.onFirstCalendarNextMonthClick()}><img src={arrow} alt='arrow' /></button>
                                         </div>
                                     </div>
                                     <div className='header_month_calendar'>
                                         {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
                                     </div>
                                     <div className='body_month_calendar'>
-                                        {firstCalendar.datesOfCalendar.map((week, index) => week.map((item) =>
-                                            <div key={index + week.indexOf(item)}>
-                                                <div className={(tempFromDate[2] === item.date && tempFromDate[1] === item.month && tempFromDate[0] === item.year) && !item.disabled ? 'today' : (item.disabled ? 'disabled' : '')}
-                                                    onClick={() => !item.disabled ? this.setState({ tempFromDate: [item.year, item.month, item.date] }) : null}>{item.date}
+                                        {firstCalendar.datesOfCalendar.map((week, index) => week.map((item) => {
+                                            const isSelected = (tempFromDate[2] === item.date && tempFromDate[1] === item.month && tempFromDate[0] === item.year);
+                                            let itemDateClassname = '_item_day';
+                                            let itemDateBlockClassname = '_item_day_calendar';
+
+                                            if (isSelected) {
+                                                itemDateClassname = itemDateClassname.concat(' today');
+                                            } else if (item.disabled) {
+                                                itemDateClassname = itemDateClassname.concat(' disabled');
+                                            }
+
+                                            return (<div className={itemDateBlockClassname} key={index + week.indexOf(item)} onClick={() => !item.disabled ? this.setState({ tempFromDate: [item.year, item.month, item.date] }) : null}>
+                                                <div className={itemDateClassname}>
+                                                    {item.date}
                                                 </div>
-                                            </div>))}
+                                            </div>)
+                                        }))}
                                     </div>
                                 </div>
                                 <div className='line' />
@@ -378,24 +389,35 @@ export class DurationInput extends React.Component {
                                     <div className='top_month_calendar'>
                                         <label>{monthsOfYear[secondCalendar.month]} {secondCalendar.year}</label>
                                         <div className='button_container'>
-                                            <button onClick={(e) => this.onSecondCalendarPreviousMonthClick()}><img src={arrow} /></button>
-                                            <button onClick={(e) => this.onSecondCalendarNextMonthClick()}><img src={arrow} /></button>
+                                            <button onClick={(e) => this.onSecondCalendarPreviousMonthClick()}><img src={arrow} alt='arrow' /></button>
+                                            <button onClick={(e) => this.onSecondCalendarNextMonthClick()}><img src={arrow} alt='arrow' /></button>
                                         </div>
                                     </div>
                                     <div className='header_month_calendar'>
                                         {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
                                     </div>
                                     <div className='body_month_calendar'>
-                                        {secondCalendar.datesOfCalendar.map((week, index) => week.map((item) =>
-                                            <div key={index + week.indexOf(item)}>
-                                                <div className={(tempToDate[2] === item.date && tempToDate[1] === item.month && tempToDate[0] === item.year) && !item.disabled ? 'today' : (item.disabled ? 'disabled' : '')}
-                                                    onClick={() => !item.disabled ? this.setState({ tempToDate: [item.year, item.month, item.date] }) : null}>{item.date}</div>
-                                            </div>))}
+                                        {secondCalendar.datesOfCalendar.map((week, index) => week.map((item) => {
+                                            const isSelected = (tempToDate[2] === item.date && tempToDate[1] === item.month && tempToDate[0] === item.year);
+                                            let itemDateClassname = '_item_day';
+                                            let itemDateBlockClassname = '_item_day_calendar';
+
+                                            if (isSelected) {
+                                                itemDateClassname = itemDateClassname.concat(' today');
+                                            } else if (item.disabled) {
+                                                itemDateClassname = itemDateClassname.concat(' disabled');
+                                            }
+                                            return (
+                                                <div key={index + week.indexOf(item)} className={itemDateBlockClassname} onClick={() => !item.disabled ? this.setState({ tempToDate: [item.year, item.month, item.date] }) : null}>
+                                                    <div className={itemDateClassname}>{item.date}</div>
+                                                </div>
+                                            )
+                                        }))}
                                     </div>
                                 </div>
                             </div>
                             <div className='container'>
-                                {errorMessages.map((item, i) => <MessageComponent type={MESSAGE_TYPE.DANGER} mainMessage={item.message} onClose={() => {
+                                {errorMessages.map((item, i) => <MessageComponent key={i} type={MESSAGE_TYPE.DANGER} mainMessage={item.message} onClose={() => {
                                     errorMessages.splice(i, 1);
                                     this.setState({ errorMessages: errorMessages });
                                 }} />)}
