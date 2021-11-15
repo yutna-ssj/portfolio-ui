@@ -5,7 +5,7 @@ export const DeployStatus = {
 }
 
 const env_config = {
-    DEV: { url: 'http://192.168.1.104:8080', status: DeployStatus.DEV },
+    DEV: { url: 'http://192.168.212.122:8080', status: DeployStatus.DEV },
     PRODUCTION: { url: 'https://yuttana-portfolio-api.herokuapp.com', status: DeployStatus.PRODUCTION }
 }
 

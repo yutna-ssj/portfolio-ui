@@ -110,6 +110,7 @@ export default class CalendarMeeting extends React.Component {
             }
 
             let length = endDay.indexOfMonth - startDay.indexOfMonth + 1;
+            console.log(startDay, endDay);
             if (length > 7) {
                 startDay = calendar.datesOfCalendar[startDay.week][0];
                 endDay = calendar.datesOfCalendar[endDay.week][6];
@@ -204,7 +205,8 @@ export default class CalendarMeeting extends React.Component {
 
     render() {
         const { show } = this.props;
-        const { showPeriodType, calendar, days, selectedDays, today, totalDays, typeOptions, clickedDay } = this.state;
+        const { showPeriodType, calendar, days, selectedDays, today, totalDays, typeOptions, clickedDay, startDay, endDay } = this.state;
+        console.log(totalDays);
         let _calendar = [];
         if (calendar.datesOfCalendar?.length > 0) {
             _calendar = calendar.datesOfCalendar.slice(0, 6);
@@ -263,7 +265,7 @@ export default class CalendarMeeting extends React.Component {
                                                 onMouseDown={(e) => {
                                                     this.isMousedown = true;
                                                     if (selectedDays[0].checkDate === item.checkDate) {
-                                                        this.setState({ startDay: item, endDay: item });
+                                                        this.setState({ startDay: item, endDay: item, clickedDay: item });
                                                     }
                                                     else if (totalDays > 7) {
                                                         let week = item.week;
@@ -278,7 +280,7 @@ export default class CalendarMeeting extends React.Component {
                                                                 indexOfWeek = 0;
                                                             }
                                                         }
-                                                        this.setState({ startDay: startDay, endDay: endDay, clickedDay: item });
+                                                        this.setState({ startDay: item, endDay: endDay, clickedDay: item });
                                                     } else {
                                                         let endDay = item;
                                                         let week = item.week;
@@ -296,11 +298,11 @@ export default class CalendarMeeting extends React.Component {
                                                 }}
                                                 onMouseEnter={(e) => {
                                                     if (this.isMousedown) {
-                                                        if (totalDays <= 7) {
-                                                            this.setState({ startDay: clickedDay, endDay: item });
-                                                        } else {
-                                                            this.setState({ endDay: item });
-                                                        }
+                                                        // if (totalDays <= 7) {
+                                                        //     this.setState({ startDay: clickedDay, endDay: item, totalDays: totalDays + 1 });
+                                                        // } else {
+                                                        this.setState({ startDay: clickedDay, endDay: item, totalDays: totalDays + 1 });
+                                                        // }
                                                     }
                                                 }}>
                                                 <div className={itemDateClassname}><div>{item.date}</div>
