@@ -30,7 +30,6 @@ $color_hover: #e9e9e9;
     & .left {
         grid-area: left;
         width: 100%;
-        
     }
 
     & .right {
@@ -85,6 +84,9 @@ $color_hover: #e9e9e9;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                &:last-child {
+                    margin-left: 5px;
+                }
                 & img {
                     filter: brightness(0.8);
                     height: 9px;
@@ -142,7 +144,6 @@ $color_hover: #e9e9e9;
             height: 30px;
             width: 100% !important;
             flex: 1 0 14.28%;
-
             cursor: pointer;
             @include prefix(user-select, none, moz webkit);
 
@@ -173,8 +174,8 @@ $color_hover: #e9e9e9;
             }
 
             &._selected {
-                transition: 0.2s;
                 background-color: $color_bg_blue;
+                transition: 0.3s;
                 & ._item_day {
                     color: $color_primary_darkblue;
                 }

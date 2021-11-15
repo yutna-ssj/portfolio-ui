@@ -74,7 +74,7 @@ export default class CalendarTimeline extends React.Component {
                     </div>
                 </div>
                 <div className='_body_container'>
-                    {currentTimeTop >= HEADER_MONTH_HEIGHT && currentTimeTop <= HOUR_HEIGHT * HOURS_NUMBER ?
+                    {currentTimeTop >= HEADER_MONTH_HEIGHT && currentTimeTop <= (HOUR_HEIGHT * HOURS_NUMBER) + HEADER_MONTH_HEIGHT ?
                         <div className='_current_time_line' style={{ top: currentTimeTop + 'px' }}>
                             <label className='_current_time'>{currentTime}</label>
                         </div> : null}

@@ -86,8 +86,6 @@ export default class CalendarMeeting extends React.Component {
         document.removeEventListener('mouseup', this.onMouseUp);
     }
 
-
-
     getSnapshotBeforeUpdate(prevProp, prevState) {
         if (this.state.startDay?.checkDate !== prevState.startDay?.checkDate
             || this.state.endDay?.checkDate !== prevState.endDay?.checkDate) {
@@ -110,12 +108,10 @@ export default class CalendarMeeting extends React.Component {
             }
 
             let length = endDay.indexOfMonth - startDay.indexOfMonth + 1;
-            console.log(startDay, endDay);
             if (length > 7) {
                 startDay = calendar.datesOfCalendar[startDay.week][0];
                 endDay = calendar.datesOfCalendar[endDay.week][6];
                 length = endDay.indexOfMonth - startDay.indexOfMonth + 1;
-
             }
 
             const tempSelectedDays = [];
@@ -137,13 +133,21 @@ export default class CalendarMeeting extends React.Component {
     getCalendar = (year, month, week) => {
         const { today } = this.state;
         const ret = [];
-        const startDateOfMonth = new Date(year, month, 1);
+        let tempMonth = (month - 1 < 0 ? 11 : month - 1);
+        let tempYear = tempMonth === 11 ? year - 1 : year;
+        const startDateOfMonth = new Date(tempYear, tempMonth, 1);
+        let startWeekOfCalendar = -1;
         datesOfMonth[1] = checkLeftYear(year) ? 29 : 28;
 
-        let monthOfCalendar = startDateOfMonth.getDay() > 0 ? (month === 0 ? 11 : month - 1) : month;
-        let dateOfCalendar = monthOfCalendar === month ? 1 : datesOfMonth[monthOfCalendar] - (startDateOfMonth.getDay() - 1);
-        let yearOfCalendar = month === 0 ? year - 1 : year;
-        for (let i = 0; i < 12; i++) {
+        let monthOfCalendar = startDateOfMonth.getDay() > 0 ? (tempMonth === 0 ? 11 : tempMonth - 1) : tempMonth;
+        let dateOfCalendar = monthOfCalendar === tempMonth ? 1 : datesOfMonth[monthOfCalendar] - (startDateOfMonth.getDay() - 1);
+        let yearOfCalendar = tempMonth === 0 ? tempYear - 1 : tempYear;
+
+        // let monthOfCalendar = (month === 0 ? 11 : month - 1);
+        // let dateOfCalendar = monthOfCalendar === month ? 1 : datesOfMonth[monthOfCalendar] - (startDateOfMonth.getDay() - 1);
+
+
+        for (let i = 0; i < 18; i++) {
             const datesOfWeek = [];
             for (let j = 0; j < 7; j++) {
                 let item_date = { date: 0, month: -1, year: 0, disabled: false, week: 0, index: 0, indexOfMonth: 0 };
@@ -158,6 +162,9 @@ export default class CalendarMeeting extends React.Component {
                 datesOfWeek.push(item_date);
                 if ((today[0] === dateOfCalendar && today[1] === monthOfCalendar && today[2] === year) && week === -1)
                     week = i;
+                if (startWeekOfCalendar === -1 && (monthOfCalendar === month && yearOfCalendar === year)) {
+                    startWeekOfCalendar = i;
+                }
                 dateOfCalendar++;
                 if (dateOfCalendar > datesOfMonth[monthOfCalendar]) {
                     monthOfCalendar = monthOfCalendar == 11 ? 0 : monthOfCalendar + 1;
@@ -167,7 +174,50 @@ export default class CalendarMeeting extends React.Component {
             }
             ret.push(datesOfWeek);
         }
-        return { year: year, month: month, week: week, datesOfCalendar: ret };
+        return { year: year, month: month, week: week, startWeekIndex: startWeekOfCalendar, datesOfCalendar: ret };
+    }
+
+    onPreviousMonth = () => {
+        const { calendar } = this.state;
+        const month = calendar.month - 1 < 0 ? 11 : calendar.month - 1;
+        const year = month === 11 ? calendar.year - 1 : calendar.year;
+        this.setState({ calendar: this.getCalendar(year, month, calendar.week) });
+    }
+
+    onNextMonth = () => {
+        const { calendar } = this.state;
+        const month = calendar.month + 1 > 11 ? 0 : calendar.month + 1;
+        const year = month === 0 ? calendar.year + 1 : calendar.year;
+        this.setState({ calendar: this.getCalendar(year, month, calendar.week) });
+    }
+
+
+    onPrevious = () => {
+        const { showPeriodType, selectedDays } = this.state;
+
+
+        if (selectedDays.length > 0) {
+            let startDay = selectedDays[0];
+            let week = selectedDays[0].week;
+            let indexOfWeek = selectedDays[0].index;
+        }
+
+        // if (showPeriodType === SHOW_PERIOD_TYPE.DAY) {
+        //     let week = selectedDays[0].week;
+        //     let indexOfWeek = selectedDays[0].index;
+        //     indexOfWeek--;
+        //     if (indexOfWeek < 0) {
+        //         indexOfWeek = 6;
+        //         week--;
+        //         if (week < 0) {
+        //             week = 5;
+        //         }
+        //     }
+        // }
+    }
+
+    onNext = () => {
+
     }
 
 
@@ -201,15 +251,35 @@ export default class CalendarMeeting extends React.Component {
         }
     }
 
+    getLabelSelectedDays = () => {
+        const { selectedDays, totalDays } = this.state;
+        let label = '';
 
+        if (totalDays === 1) {
+            label = `${selectedDays[0].date} ${monthsOfYear[selectedDays[0].month - 1]} ${selectedDays[0].year}`;
+        } else if (totalDays > 1) {
+            if (selectedDays[0].year === selectedDays[selectedDays.length - 1].year) {
+                if (selectedDays[0].month === selectedDays[selectedDays.length - 1].month) {
+                    label = `${monthsOfYear[selectedDays[0].month - 1]} ${selectedDays[0].year}`;
+                } else {
+                    label = `${monthsOfYear[selectedDays[0].month - 1].substr(0, 3)} - ${monthsOfYear[selectedDays[selectedDays.length - 1].month - 1].substr(0, 3)} ${selectedDays[0].year}`;
+                }
+            } else {
+                label = `${monthsOfYear[selectedDays[0].month - 1].substr(0, 3)} ${selectedDays[0].year} - ${monthsOfYear[selectedDays[selectedDays.length - 1].month - 1].substr(0, 3)} ${selectedDays[selectedDays.length - 1].year}`;
+            }
+        }
+
+
+        return label;
+    }
 
     render() {
         const { show } = this.props;
         const { showPeriodType, calendar, days, selectedDays, today, totalDays, typeOptions, clickedDay, startDay, endDay } = this.state;
-        console.log(totalDays);
+
         let _calendar = [];
         if (calendar.datesOfCalendar?.length > 0) {
-            _calendar = calendar.datesOfCalendar.slice(0, 6);
+            _calendar = calendar.datesOfCalendar.slice(calendar.startWeekIndex, calendar.startWeekIndex + 6);
         }
 
         return (<React.Fragment>
@@ -224,8 +294,8 @@ export default class CalendarMeeting extends React.Component {
                                 <div className='top_month_calendar'>
                                     <label>{monthsOfYear[calendar.month]} {calendar.year}</label>
                                     <div className='button_container'>
-                                        <button onClick={(e) => { }}><img src={arrow} alt={'arrow'} /></button>
-                                        <button onClick={(e) => { }}><img src={arrow} alt={'arrow'} /></button>
+                                        <button onClick={(e) => { }} onClick={(e) => this.onPreviousMonth()}><img src={arrow} alt={'arrow'} /></button>
+                                        <button onClick={(e) => { }} onClick={(e) => this.onNextMonth()}><img src={arrow} alt={'arrow'} /></button>
                                     </div>
                                 </div>
                                 <div className='header_month_calendar'>
@@ -270,7 +340,6 @@ export default class CalendarMeeting extends React.Component {
                                                     else if (totalDays > 7) {
                                                         let week = item.week;
                                                         let indexOfWeek = 0;
-                                                        let startDay = calendar.datesOfCalendar[week][indexOfWeek];
                                                         let endDay = item;
                                                         for (let i = 0; i < totalDays; i++) {
                                                             endDay = calendar.datesOfCalendar[week][indexOfWeek];
@@ -298,11 +367,7 @@ export default class CalendarMeeting extends React.Component {
                                                 }}
                                                 onMouseEnter={(e) => {
                                                     if (this.isMousedown) {
-                                                        // if (totalDays <= 7) {
-                                                        //     this.setState({ startDay: clickedDay, endDay: item, totalDays: totalDays + 1 });
-                                                        // } else {
                                                         this.setState({ startDay: clickedDay, endDay: item, totalDays: totalDays + 1 });
-                                                        // }
                                                     }
                                                 }}>
                                                 <div className={itemDateClassname}><div>{item.date}</div>
@@ -318,7 +383,7 @@ export default class CalendarMeeting extends React.Component {
                         <div className='right'>
                             <div className='_calendar_content'>
                                 <div className='_header_bar_container'>
-                                    <div className='_header_bar_left'><label className='lg_label'>{monthsOfYear[calendar?.month]} {calendar.year}</label></div>
+                                    <div className='_header_bar_left'><label className='lg_label'>{this.getLabelSelectedDays()}</label></div>
                                     <div className='_header_bar_right'>
                                         <button className='planner_create_button' style={{ marginRight: '10px' }}><img src={plus} /> Create</button>
                                         {/* <div className='notification_container'>
