@@ -33,6 +33,7 @@ export default class CalendarMeeting extends React.Component {
             days: [],
             selectedDays: [],
             calendar: {},
+            _calendar: {},
             previousCalendar: {},
             nextCalendar: {},
             totalDays: 0,
@@ -48,17 +49,14 @@ export default class CalendarMeeting extends React.Component {
         document.addEventListener('mouseup', this.onMouseUp);
         const { showPeriodType, today } = this.state;
         let days = [];
-        const calendar = this.getCalendar(today[2], today[1], -1);
 
-        const previousCalendar = this.getCalendar(today[2], today[1], -1);
-
-        const nextCalendar = this.getCalendar(today[2], today[1], -1);
+        const tempCalendar = this.getCalendar(today[2], today[1], -1);
 
         if (showPeriodType === SHOW_PERIOD_TYPE.WEEK) {
-            days = calendar.datesOfCalendar[calendar.week];
+            days = tempCalendar.datesOfCalendar[tempCalendar.week];
         }
 
-        this.setState({ calendar: calendar, days: days, selectedDays: days, totalDays: days.length });
+        this.setState({ _calendar: tempCalendar, calendar: tempCalendar, days: days, selectedDays: days, totalDays: days.length });
     }
 
 
@@ -87,8 +85,8 @@ export default class CalendarMeeting extends React.Component {
     }
 
     getSnapshotBeforeUpdate(prevProp, prevState) {
-        if (this.state.startDay?.checkDate !== prevState.startDay?.checkDate
-            || this.state.endDay?.checkDate !== prevState.endDay?.checkDate) {
+        if ((this.state.startDay?.checkDate !== prevState.startDay?.checkDate
+            || this.state.endDay?.checkDate !== prevState.endDay?.checkDate) && this.isMousedown) {
             return true;
         }
         return false;
@@ -130,11 +128,17 @@ export default class CalendarMeeting extends React.Component {
         }
     }
 
-    getCalendar = (year, month, week) => {
+    getCalendar = (year, month, week, spec) => {
         const { today } = this.state;
         const ret = [];
-        let tempMonth = (month - 1 < 0 ? 11 : month - 1);
-        let tempYear = tempMonth === 11 ? year - 1 : year;
+        let tempMonth = month;
+        let tempYear = year;
+        for (let i = 0; i < 3; i++) {
+            tempMonth = tempMonth - 1 < 0 ? 11 : tempMonth - 1;
+            tempYear = tempMonth === 11 ? tempYear - 1 : tempYear;
+        }
+        // let tempMonth = (month - 1 < 0 ? 11 : month - 1);
+        // let tempYear = tempMonth === 11 ? year - 1 : year;
         const startDateOfMonth = new Date(tempYear, tempMonth, 1);
         let startWeekOfCalendar = -1;
         datesOfMonth[1] = checkLeftYear(year) ? 29 : 28;
@@ -143,25 +147,33 @@ export default class CalendarMeeting extends React.Component {
         let dateOfCalendar = monthOfCalendar === tempMonth ? 1 : datesOfMonth[monthOfCalendar] - (startDateOfMonth.getDay() - 1);
         let yearOfCalendar = tempMonth === 0 ? tempYear - 1 : tempYear;
 
-        // let monthOfCalendar = (month === 0 ? 11 : month - 1);
-        // let dateOfCalendar = monthOfCalendar === month ? 1 : datesOfMonth[monthOfCalendar] - (startDateOfMonth.getDay() - 1);
+        let _spec = { week: 0, index: 0 };
 
+        if (startDateOfMonth.getDay() === 0) {
+            monthOfCalendar = (monthOfCalendar - 1 < 0 ? 11 : monthOfCalendar - 1);
+            yearOfCalendar = monthOfCalendar === 11 ? yearOfCalendar - 1 : yearOfCalendar;
+            let extendedDays = datesOfMonth[monthOfCalendar] - 6;
+            dateOfCalendar = extendedDays;
+        } else {
+            let extendedDays = dateOfCalendar - 7;
+            dateOfCalendar = extendedDays;
+        }
 
-        for (let i = 0; i < 18; i++) {
+        for (let i = 0; i < 30; i++) {
             const datesOfWeek = [];
             for (let j = 0; j < 7; j++) {
-                let item_date = { date: 0, month: -1, year: 0, disabled: false, week: 0, index: 0, indexOfMonth: 0 };
-                item_date.date = dateOfCalendar;
-                item_date.month = monthOfCalendar + 1;
-                item_date.year = yearOfCalendar;
-                item_date.disabled = month !== monthOfCalendar;
-                item_date.week = i;
-                item_date.index = j;
-                item_date.indexOfMonth = (i * 7) + j;
+                let item_date = { date: dateOfCalendar, month: monthOfCalendar + 1, year: yearOfCalendar, disabled: month !== monthOfCalendar, week: i, index: j, indexOfMonth: (i * 7) + j };
                 item_date.checkDate = `${item_date.date}-${item_date.month}-${item_date.year}`;
                 datesOfWeek.push(item_date);
                 if ((today[0] === dateOfCalendar && today[1] === monthOfCalendar && today[2] === year) && week === -1)
                     week = i;
+
+                if (spec) {
+                    if ((spec.year === yearOfCalendar && spec.month === monthOfCalendar && spec.date === dateOfCalendar)) {
+                        _spec = { week: i, index: j };
+                    }
+                }
+
                 if (startWeekOfCalendar === -1 && (monthOfCalendar === month && yearOfCalendar === year)) {
                     startWeekOfCalendar = i;
                 }
@@ -174,7 +186,7 @@ export default class CalendarMeeting extends React.Component {
             }
             ret.push(datesOfWeek);
         }
-        return { year: year, month: month, week: week, startWeekIndex: startWeekOfCalendar, datesOfCalendar: ret };
+        return { year: year, month: month, week: week, startWeekIndex: startWeekOfCalendar, datesOfCalendar: ret, spec: _spec };
     }
 
     onPreviousMonth = () => {
@@ -193,27 +205,52 @@ export default class CalendarMeeting extends React.Component {
 
 
     onPrevious = () => {
-        const { showPeriodType, selectedDays } = this.state;
+        const { _calendar, selectedDays, totalDays } = this.state;
 
+        if (totalDays > 7) {
+            if (selectedDays[0].indexOfMonth - totalDays >= 0) {
+                let week = selectedDays[0].week - (totalDays / 7);
+                let index = 0;
+                let startDay = _calendar.datesOfCalendar[week][index];
+                let endDay = startDay;
+                const tempSelectedDays = [];
+                for (let i = 0; i < totalDays; i++) {
+                    tempSelectedDays.push(_calendar.datesOfCalendar[week][index]);
+                    endDay = _calendar.datesOfCalendar[week][index];
+                    index++;
+                    if (index > 6) {
+                        week++;
+                        index = 0;
+                    }
+                }
+                this.setState({ startDay: startDay, endDay: endDay, days: tempSelectedDays, selectedDays: tempSelectedDays });
+            } else {
+                const month = _calendar.month - 1 < 0 ? 11 : _calendar.month - 1;
+                const year = month === 11 ? _calendar.year - 1 : _calendar.year;
+                let oldStartDay = selectedDays[0];
+                const tempCalendar = this.getCalendar(year, month, -1, { year: oldStartDay.year, month: oldStartDay.month - 1 < 0 ? 11 : oldStartDay.month - 1, date: oldStartDay.date });
+                let week = tempCalendar.datesOfCalendar[tempCalendar.spec.week][tempCalendar.spec.index].week - (totalDays / 7);
+                let index = 0;
+                let startDay = tempCalendar.datesOfCalendar[week][index];
+                let endDay = startDay;
+                const tempSelectedDays = [];
+                for (let i = 0; i < totalDays; i++) {
+                    tempSelectedDays.push(tempCalendar.datesOfCalendar[week][index]);
+                    endDay = tempCalendar.datesOfCalendar[week][index];
+                    index++;
+                    if (index > 6) {
+                        week++;
+                        index = 0;
+                    }
+                }
+                this.setState({ startDay: startDay, endDay: endDay, days: tempSelectedDays, selectedDays: tempSelectedDays, _calendar: tempCalendar, calendar: tempCalendar });
+                console.log(startDay, endDay, week);
 
-        if (selectedDays.length > 0) {
-            let startDay = selectedDays[0];
-            let week = selectedDays[0].week;
-            let indexOfWeek = selectedDays[0].index;
+            }
+        } else {
+
         }
 
-        // if (showPeriodType === SHOW_PERIOD_TYPE.DAY) {
-        //     let week = selectedDays[0].week;
-        //     let indexOfWeek = selectedDays[0].index;
-        //     indexOfWeek--;
-        //     if (indexOfWeek < 0) {
-        //         indexOfWeek = 6;
-        //         week--;
-        //         if (week < 0) {
-        //             week = 5;
-        //         }
-        //     }
-        // }
     }
 
     onNext = () => {
@@ -277,10 +314,8 @@ export default class CalendarMeeting extends React.Component {
         const { show } = this.props;
         const { showPeriodType, calendar, days, selectedDays, today, totalDays, typeOptions, clickedDay, startDay, endDay } = this.state;
 
-        let _calendar = [];
-        if (calendar.datesOfCalendar?.length > 0) {
-            _calendar = calendar.datesOfCalendar.slice(calendar.startWeekIndex, calendar.startWeekIndex + 6);
-        }
+        // const _datesOfCalendar = calendar.datesOfCalendar?.slice(calendar.startWeekIndex, calendar.startWeekIndex + 6) || [];
+        const _datesOfCalendar = calendar.datesOfCalendar || [];
 
         return (<React.Fragment>
             {show ? <React.Fragment>
@@ -302,7 +337,7 @@ export default class CalendarMeeting extends React.Component {
                                     {daysOfWeek.map((day) => <div key={day}>{day}</div>)}
                                 </div>
                                 <div className='body_month_calendar'>
-                                    {_calendar.map((week, iw) => week.map((item, id) => {
+                                    {_datesOfCalendar.map((week, iw) => week.map((item, id) => {
                                         const isToday = (today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year);
                                         let itemDateClassname = '_item_day';
                                         let parentClassname = '_item_day_calendar';
@@ -327,7 +362,7 @@ export default class CalendarMeeting extends React.Component {
 
                                         if (item.disabled) {
                                             itemDateClassname = itemDateClassname.concat(' disabled');
-                                            // itemDateBlockClassname = itemDateBlockClassname.concat(' _disabled');
+                                            // parentClassname = parentClassname.concat(' _disabled');
                                         }
 
                                         return (
@@ -393,7 +428,7 @@ export default class CalendarMeeting extends React.Component {
                                             {typeOptions.map((option => <option key={option} value={option}>{option}</option>))}
                                         </TypeSelectInput>
                                         <div className='button_container' style={{ marginLeft: '15px' }}>
-                                            <button className='tiny_button arrow_previous' onClick={(e) => { }}><img src={slim_arrow} /></button>
+                                            <button className='tiny_button arrow_previous' onClick={(e) => this.onPrevious()}><img src={slim_arrow} /></button>
                                             <button className='tiny_button arrow_next' onClick={(e) => { }}><img src={slim_arrow} /></button>
                                         </div>
                                     </div>
