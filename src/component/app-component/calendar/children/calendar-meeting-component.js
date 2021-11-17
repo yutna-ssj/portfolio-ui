@@ -197,7 +197,6 @@ export default class CalendarMeeting extends React.Component {
 
         const new_selected_days = this.getSelectedDaysOutCalendar({ year: selectedDays[selectedDays.length - 1].year, month: selectedDays[selectedDays.length - 1].month - 1, date: selectedDays[selectedDays.length - 1].date, index: selectedDays[selectedDays.length - 1].index }, totalDays, 1);
 
-        console.log(new_selected_days);
 
         if (new_selected_days.length > 0) {
             const temp_start_day = new_selected_days[0];
