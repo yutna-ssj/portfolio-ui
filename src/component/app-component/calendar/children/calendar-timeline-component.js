@@ -55,7 +55,7 @@ export default class CalendarTimeline extends React.Component {
     }
 
     render() {
-        const { days, today } = this.props;
+        const { days, today, onDayClick } = this.props;
         const { all_time, currentTime, currentTimeTop } = this.state;
         let width = 0;
         width = Math.floor((100 / days.length) * 100) / 100;
@@ -66,7 +66,7 @@ export default class CalendarTimeline extends React.Component {
                     <div className='_header_week_container'>
                         {days.map((item, index) => {
                             const isToday = today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year;
-                            return (<div key={index} className={isToday ? '_header_date today' : '_header_date'} style={{ width: width + '%' }}>
+                            return (<div key={index} className={isToday ? '_header_date today' : '_header_date'} style={{ width: width + '%' }} onClick={(e) => onDayClick(item)}>
                                 <label className='_date_label'>{item.date}</label>
                                 <label className='_weekly_day'>{daysOfWeek[item.index].toUpperCase()}</label>
                             </div>);

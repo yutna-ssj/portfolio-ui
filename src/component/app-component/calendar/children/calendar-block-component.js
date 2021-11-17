@@ -9,7 +9,7 @@ export default class CalendarBlock extends React.Component {
 
 
     render() {
-        const { today, days } = this.props;
+        const { today, days, onDayClick } = this.props;
         return (
             <div className='calendar_block_container'>
                 <div className='_header_container'>
@@ -28,7 +28,7 @@ export default class CalendarBlock extends React.Component {
                             itemDateClassname = itemDateClassname.concat(' disabled');
                         }
                         return (<div key={index} className='_block_date'>
-                            <div className={itemDateClassname}>{item.date}</div>
+                            <div className={itemDateClassname} onClick={(e) => onDayClick(item)}>{item.date}</div>
                         </div>);
                     })}
                 </div>
