@@ -67,8 +67,8 @@ export default class CalendarTimeline extends React.Component {
                         {days.map((item, index) => {
                             const isToday = today[0] === item.date && today[1] === item.month - 1 && today[2] === item.year;
                             return (<div key={index} className={isToday ? '_header_date today' : '_header_date'} style={{ width: width + '%' }} onClick={(e) => onDayClick(item)}>
-                                <label className='_date_label'>{item.date}</label>
-                                <label className='_weekly_day'>{daysOfWeek[item.index].toUpperCase()}</label>
+                                <div className='_date_label'>{item.date}</div>
+                                <div className='_weekly_day'>{daysOfWeek[item.index].toUpperCase()}</div>
                             </div>);
                         })}
                     </div>
