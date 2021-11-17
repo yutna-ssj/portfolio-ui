@@ -266,7 +266,7 @@ export default class CalendarMeeting extends React.Component {
                 this.setState({ days: temp_selected_days, selectedDays: temp_selected_days, totalDays: temp_selected_days.length, typeOptions: typeOptions, showPeriodType: type });
             } else {
                 if (totalDays <= 7) {
-                    const temp_start_date = this.getPreviousDayFromDay(clickedDay);
+                    const temp_start_date = this.getPreviousDayFromDay(startDay);
 
                     const new_selected_days = this.getSelectedDaysOutCalendar({ year: temp_start_date.year, month: temp_start_date.month, date: temp_start_date.date, index: temp_start_date.index }, totalDays, 1);
                     typeOptions.push(`${totalDays} DAYS`);
@@ -276,7 +276,7 @@ export default class CalendarMeeting extends React.Component {
                     });
 
                 } else if (totalDays > 7) {
-                    const start_week = clickedDay.week;
+                    const start_week = startDay.week;
                     const temp_start_date = this.getPreviousDayFromDay(calendar.datesOfCalendar[start_week][0]);
 
                     const new_selected_days = this.getSelectedDaysOutCalendar({ year: temp_start_date.year, month: temp_start_date.month, date: temp_start_date.date, index: temp_start_date.index }, totalDays, 1);
@@ -294,8 +294,7 @@ export default class CalendarMeeting extends React.Component {
             this.isMouseDown = false;
             this.isMouseDrag = false;
             if (totalDays <= 7) {
-                const temp_start_date = this.getPreviousDayFromDay(clickedDay);
-
+                const temp_start_date = this.getPreviousDayFromDay(startDay);
                 const new_selected_days = this.getSelectedDaysOutCalendar({ year: temp_start_date.year, month: temp_start_date.month, date: temp_start_date.date, index: temp_start_date.index }, totalDays, 1);
                 typeOptions.push(`${totalDays} DAYS`);
                 type = `${totalDays} DAYS`;
@@ -304,9 +303,8 @@ export default class CalendarMeeting extends React.Component {
                 });
 
             } else if (totalDays > 7) {
-                const start_week = clickedDay.week;
+                const start_week = startDay.week;
                 const temp_start_date = this.getPreviousDayFromDay(calendar.datesOfCalendar[start_week][0]);
-
                 const new_selected_days = this.getSelectedDaysOutCalendar({ year: temp_start_date.year, month: temp_start_date.month, date: temp_start_date.date, index: temp_start_date.index }, totalDays, 1);
                 typeOptions.push(`${totalDays / 7} WEEKS`);
                 type = `${totalDays / 7} WEEKS`;
@@ -355,6 +353,8 @@ export default class CalendarMeeting extends React.Component {
                 indexOfWeek = 0;
             }
         }
+
+        console.log(startDay,endDay);
 
         this.setState({ selectedDays: tempSelectedDays, totalDays: tempSelectedDays.length, endDay: endDay, startDay: startDay });
     }
