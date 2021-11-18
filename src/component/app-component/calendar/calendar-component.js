@@ -38,7 +38,7 @@ class CalendarComponent extends React.Component {
 
         let monthOfCalendar = startDateOfMonth.getDay() > 0 ? (month === 0 ? 11 : month - 1) : month;
         let dateOfCalendar = monthOfCalendar === month ? 1 : datesOfMonth[monthOfCalendar] - (startDateOfMonth.getDay() - 1);
-        let yearOfCalendar = month === 0 ? year - 1 : year;
+        let yearOfCalendar = month === 0 && monthOfCalendar === 11 ? year - 1 : year;
         for (let i = 0; i < 6; i++) {
             const datesOfWeek = [];
             for (let j = 0; j < 7; j++) {

@@ -83,7 +83,7 @@ export default class CalendarMeeting extends React.Component {
 
         let monthOfCalendar = startDateOfMonth.getDay() > 0 ? (tempMonth === 0 ? 11 : tempMonth - 1) : tempMonth;
         let dateOfCalendar = monthOfCalendar === tempMonth ? 1 : datesOfMonth[monthOfCalendar] - (startDateOfMonth.getDay() - 1);
-        let yearOfCalendar = tempMonth === 0 ? tempYear - 1 : tempYear;
+        let yearOfCalendar = tempMonth === 0 && monthOfCalendar === 11 ? tempYear - 1 : tempYear;
 
 
         for (let i = 0; i < 6; i++) {
@@ -134,6 +134,7 @@ export default class CalendarMeeting extends React.Component {
                 if (start.date < 1) {
                     start.month = start.month - 1 < 0 ? 11 : start.month - 1;
                     start.year = start.month === 11 ? start.year - 1 : start.year;
+                    datesOfMonth[1] = checkLeftYear(start.year) ? 29 : 28;
                     start.date = datesOfMonth[start.month];
                 }
                 const item = { ...start, month: start.month + 1, checkDate: `${start.date}-${start.month + 1}-${start.year}` };
@@ -144,6 +145,7 @@ export default class CalendarMeeting extends React.Component {
             for (let i = 0; i < totalDays; i++) {
                 start.date = start.date + 1;
                 start.index = start.index + 1 > 6 ? 0 : start.index + 1;
+                datesOfMonth[1] = checkLeftYear(start.year) ? 29 : 28;
                 if (start.date > datesOfMonth[start.month]) {
                     start.month = start.month + 1 > 11 ? 0 : start.month + 1;
                     start.year = start.month === 0 ? start.year + 1 : start.year;
@@ -201,6 +203,7 @@ export default class CalendarMeeting extends React.Component {
         if (date < 1) {
             month = month - 1 < 0 ? 11 : month - 1;
             year = month === 11 ? year - 1 : year;
+            datesOfMonth[1] = checkLeftYear(year) ? 29 : 28;
             date = datesOfMonth[month];
         }
 
@@ -354,7 +357,7 @@ export default class CalendarMeeting extends React.Component {
             }
         }
 
-        console.log(startDay,endDay);
+        console.log(startDay, endDay);
 
         this.setState({ selectedDays: tempSelectedDays, totalDays: tempSelectedDays.length, endDay: endDay, startDay: startDay });
     }
@@ -375,6 +378,8 @@ export default class CalendarMeeting extends React.Component {
         const { showPeriodType, calendar, days, selectedDays, today, totalDays, typeOptions, clickedDay, startDay, endDay } = this.state;
 
         const _datesOfCalendar = calendar.datesOfCalendar || [];
+
+        console.log(calendar, selectedDays);
 
         return (<React.Fragment>
             {show ? <React.Fragment>
